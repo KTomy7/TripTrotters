@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using TripTrotters.DataAccess;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +16,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+builder.Services.AddDbContext<TripTrottersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection")));
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -25,3 +30,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
