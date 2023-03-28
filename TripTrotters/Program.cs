@@ -4,6 +4,7 @@ using TripTrotters.DataAccess;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<TripTrottersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection")));
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -16,7 +17,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-builder.Services.AddDbContext<TripTrottersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection")));
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
