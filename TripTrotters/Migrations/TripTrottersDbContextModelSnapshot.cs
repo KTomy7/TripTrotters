@@ -51,7 +51,7 @@ namespace TripTrotters.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Apartaments");
+                    b.ToTable("Apartaments", (string)null);
                 });
 
             modelBuilder.Entity("TripTrotters.Models.Comment", b =>
@@ -84,7 +84,7 @@ namespace TripTrotters.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("TripTrotters.Models.Offer", b =>
@@ -121,7 +121,7 @@ namespace TripTrotters.Migrations
 
                     b.HasIndex("ApartamentId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("TripTrotters.Models.Post", b =>
@@ -161,7 +161,7 @@ namespace TripTrotters.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("TripTrotters.Models.Review", b =>
@@ -194,7 +194,7 @@ namespace TripTrotters.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rewies");
+                    b.ToTable("Rewies", (string)null);
                 });
 
             modelBuilder.Entity("TripTrotters.Models.User", b =>
@@ -222,7 +222,7 @@ namespace TripTrotters.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("TripTrotters.Models.Comment", b =>
