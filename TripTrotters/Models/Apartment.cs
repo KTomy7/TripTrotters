@@ -1,6 +1,6 @@
 ﻿namespace TripTrotters.Models
 {
-    public class Apartament
+    public class Apartment
     {
         public int Id { get; set; }
         public string Title { get; set; }

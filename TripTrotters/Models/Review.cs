@@ -11,9 +11,9 @@ namespace TripTrotters.Models
         [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
-        [ForeignKey("Apartament")]
-        public int ApartamentId { get; set; }
-        public Apartament Apartament { get; set; }
+        [ForeignKey("Apartment")]
+        public int ApartmentId { get; set; }
+        public Apartment Apartment { get; set; }
 
     }
 }
