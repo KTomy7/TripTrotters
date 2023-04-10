@@ -9,6 +9,11 @@ namespace TripTrotters.DataAccess
     {
         public TripTrottersDbContext(DbContextOptions<TripTrottersDbContext> options) : base(options) { }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source = 127.0.0.1, 1433; Persist Security Info = True; User ID = sa; Password = sA-12345; TrustServerCertificate=True");
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
