@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Routing;
-using System.Reflection.Metadata;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TripTrotters.Models
 {
@@ -12,9 +11,11 @@ namespace TripTrotters.Models
         public double Budget { get; set; }
         public int Likes { get; set; }
         public DateTime Date { get; set; }
-        public List<Comment> Comments { get; set; }
-        public int ApartamentId { get; set; }
-        public Apartament Apartament { get; set; }
+        public List<Comment>? Comments { get; set; }
+        [ForeignKey("Apartment")]
+        public int ApartmentId { get; set; }
+        public Apartment Apartment { get; set; }
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
     }

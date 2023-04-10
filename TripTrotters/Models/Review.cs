@@ -1,4 +1,4 @@
-﻿using System.Reflection.Metadata;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TripTrotters.Models
 {
@@ -8,10 +8,12 @@ namespace TripTrotters.Models
         public string Description { get; set; }
         public int Rating { get; set; }
         public DateTime Date { get; set; }
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
-        public int ApartamentId { get; set; }
-        public Apartament Apartament { get; set; }
+        [ForeignKey("Apartment")]
+        public int ApartmentId { get; set; }
+        public Apartment Apartment { get; set; }
 
     }
 }
