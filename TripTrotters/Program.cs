@@ -1,23 +1,11 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
-using TripTrotters.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<TripTrottersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection")));
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<TripTrottersDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection"));
-});
-builder.Services.AddIdentity<User, IdentityRole<int>>()
-    .AddEntityFrameworkStores<TripTrottersDbContext>();
-builder.Services.AddMemoryCache();
-builder.Services.AddSession();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
 
 var app = builder.Build();
 

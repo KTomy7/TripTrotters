@@ -1,42 +1,45 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TripTrotters.Models;
 
 namespace TripTrotters.DataAccess
 {
-    public class TripTrottersDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+    public class TripTrottersDbContext : DbContext
     {
+        public TripTrottersDbContext()
+        {
+        }
         public TripTrottersDbContext(DbContextOptions<TripTrottersDbContext> options) : base(options) { }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Initial Catalog=TripTrotters;Integrated Security=True;Encrypt=False");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<Post>()
                 .HasOne(p => p.User)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(p => p.UserId);
 
             modelBuilder.Entity<Post>()
-                .HasOne(p => p.Apartment)
+                .HasOne(p => p.Apartament)
                 .WithMany(a => a.Posts)
-                .HasForeignKey(p => p.ApartmentId);
+                .HasForeignKey(p => p.ApartamentId);
 
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.Post)
                 .HasForeignKey(c => c.PostId);
 
-            modelBuilder.Entity<Apartment>()
+            modelBuilder.Entity<Apartament>()
                 .HasMany(a => a.Offers)
-                .WithOne(o => o.Apartment)
-                .HasForeignKey(o => o.ApartmentId);
+                .WithOne(o => o.Apartament)
+                .HasForeignKey(o => o.ApartamentId);
 
-            modelBuilder.Entity<Apartment>()
+            modelBuilder.Entity<Apartament>()
                 .HasMany(a => a.Reviews)
-                .WithOne(r => r.Apartment)
-                .HasForeignKey(r => r.ApartmentId);
+                .WithOne(r => r.Apartament)
+                .HasForeignKey(r => r.ApartamentId);
 
             modelBuilder.Entity<Offer>()
                 .HasOne(o => o.Agent)
@@ -53,17 +56,24 @@ namespace TripTrotters.DataAccess
                 .WithMany(u => u.Comments)
                 .HasForeignKey(c => c.UserId);
 
-            modelBuilder.Entity<Apartment>()
-                .HasOne(a => a.Address)
-                .WithOne(ad => ad.Apartment)
-                .HasForeignKey<Apartment>(a => a.AddressId);
-        }
 
+        }
         public DbSet<Post> Posts { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Apartment> Apartments { get; set; }
+
+        public DbSet<Apartament> Apartaments { get; set; }
+
         public DbSet<Offer> Offers { get; set; }
+
         public DbSet<Review> Rewies { get; set; }
-        public DbSet<Address> Addresses { get; set; }
+
+
+
+
+
     }
+
 }
