@@ -12,7 +12,7 @@ builder.Services.AddDbContext<TripTrottersDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection"));
 });
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole<int>>()
     .AddEntityFrameworkStores<TripTrottersDbContext>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
