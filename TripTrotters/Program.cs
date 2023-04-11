@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
+using TripTrotters.Services;
+using TripTrotters.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IApartmentService, ApartmentService>();
 builder.Services.AddDbContext<TripTrottersDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection"));
