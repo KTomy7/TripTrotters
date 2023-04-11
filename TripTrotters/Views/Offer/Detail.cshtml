@@ -1,0 +1,22 @@
+﻿@model Offer
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<ul>
+    <li>TITLE: @Model.Title</li>
+    <li>DESCRIPTION: @Model.Description</li>
+    <li>START DATE: @Model.StartDate</li>
+    <li>END DATE @Model.EndDate</li>
+    <li>PRICE: @Model.Apartment.Price</li>
+    <li>ADDRESS: 
+        <ul>
+            <li>@Model.Apartment.Address.Country</li>
+            <li>@Model.Apartment.Address.City</li>
+            <li>@Model.Apartment.Address.Street</li>
+            <li>@Model.Apartment.Address.StreetNumber</li>
+        </ul>
+     </li>
+</ul>
