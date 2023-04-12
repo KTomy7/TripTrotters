@@ -1,0 +1,38 @@
+﻿@using TripTrotters.ViewModels;
+@using TripTrotters.Services.Abstractions;
+@model CreatePostViewModel;
+
+@inject IApartmentService _apartmentService;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<form method="post" asp-action="Create">
+    <div class="form-group">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" id=" placeholder="Enter the title of the post">
+        <span asp-validation-for="Title" class="text-danger"></span>
+
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <input asp-for="Description" class="form-control" id=" placeholder="Enter the description">
+        <span asp-validation-for="Description" class="text-danger"></span>
+
+    </div>
+    <div class="form-group">
+        <label asp-for="ApartmentId" class="control-label"></label>
+        <select asp-for="ApartmentId" class="form-control">
+            @foreach (var item in await _apartmentService.GetAll())
+            {
+                <option value="@item.Id">@item.Title</option>
+            }
+        </select>
+        <span asp-validation-for="ApartmentId" class="text-danger"></span>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Add Post</button>
+</form>

@@ -5,54 +5,92 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.Services.Abstractions;
+using TripTrotters.ViewModels;
+using System.Net;
+using TripTrotters.Services;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace TripTrotters.Controllers
 {
-	public class PostController : Controller
-	{
-		private readonly TripTrottersDbContext _context;
-		private readonly IPostService _postService;
+    public class PostController : Controller
+    {
+        private readonly TripTrottersDbContext _context;
+        private readonly IPostService _postService;
+        private readonly IApartmentService _apartmentService;
 
-		public PostController(TripTrottersDbContext context, IPostService postService)
-		{
 
-			_postService = postService;
-		}
-		public async Task<IActionResult> Index()
-		{
-			IEnumerable<Post> posts = await _postService.GetAllbyApartment(22);
-			return View(posts);
 
-		}
+        public PostController(IPostService postService, IApartmentService apartmentService, IApartmentService name)
+        {
 
-		public async Task<IActionResult> Detail(int id)
-		{
-			Post post = await _postService.GetByIdAsync(id);
-			return View(post);
-		}
+            _postService = postService;
+            _apartmentService = apartmentService;
 
-		public async Task<IActionResult> Create(Post p)
-		{
-			if (!ModelState.IsValid)
-			{
-				return View(p);
-			}
+        }
+        public async Task<IActionResult> Index()
+        {
+            IEnumerable<Post> posts = await _postService.GetAll();
+            return View(posts);
 
-			_postService.Add(p);
+        }
 
-			return RedirectToAction("Index");
-		}
+        public async Task<IActionResult> Detail(int id)
+        {
+            Post post = await _postService.GetByIdAsync(id);
+            return View(post);
+        }
 
-		public async Task<IActionResult> Update(Post p)
-		{
-			if (!ModelState.IsValid)
-			{
-				return View(p);
-			}
 
-			_postService.Update(p);
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-			return RedirectToAction("Index");
-		}
-	}
+        [HttpPost]
+        public async Task<IActionResult> Create(CreatePostViewModel postViewModel)
+        {
+
+
+            if (!ModelState.IsValid)
+            {
+                return View(postViewModel);
+            }
+
+            Post post = new Post
+            {
+                Title = postViewModel.Title,
+                Description = postViewModel.Description,
+                ApartmentId = postViewModel.ApartmentId,
+                UserId = 1,
+
+
+            };
+
+            _postService.Add(post);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id)
+        {
+            Post post = await _postService.GetByIdAsync(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var editPostViewModel = new EditPostViewModel
+            {
+                Title = post.Title,
+                Description = post.Description,
+                ApartmentId = post.ApartmentId,
+                UserId = 1
+            };
+
+            return View(editPostViewModel);
+
+        }
+    }
 }
