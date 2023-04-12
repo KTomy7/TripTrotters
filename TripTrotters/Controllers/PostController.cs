@@ -21,7 +21,7 @@ namespace TripTrotters.Controllers
 
 
 
-        public PostController(IPostService postService, IApartmentService apartmentService, IApartmentService name)
+        public PostController(IPostService postService, IApartmentService apartmentService)
         {
 
             _postService = postService;
@@ -72,24 +72,61 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
         public async Task<IActionResult> Edit(int id)
         {
             Post post = await _postService.GetByIdAsync(id);
             if (post == null)
             {
-                return NotFound();
+                return View("Error");
             }
 
-            var editPostViewModel = new EditPostViewModel
+            var postViewModel = new EditPostViewModel
             {
                 Title = post.Title,
                 Description = post.Description,
                 ApartmentId = post.ApartmentId,
-                UserId = 1
+                UserId = 1,
+
             };
 
-            return View(editPostViewModel);
+
+            return View(postViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EditPostViewModel editPostViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Failed to edit post");
+                return View("Edit", editPostViewModel);
+
+            }
+            Post post = await _postService.GetByIdAsync(editPostViewModel.Id);
+            if (post == null)
+                return View("Error");
+            post.Title = editPostViewModel.Title;
+            post.Description = editPostViewModel.Description;
+
+            _postService.Update(post);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var postDetails = await _postService.GetByIdAsync(id);
+            if (postDetails == null) return View("Error");
+            return View(postDetails);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeletePost(int id)
+        {
+            var postDetails = await _postService.GetByIdAsync(id);
+            if (postDetails == null) return View("Error");
+
+            _postService.Delete(postDetails);
+            return RedirectToAction("Index");
 
         }
     }
