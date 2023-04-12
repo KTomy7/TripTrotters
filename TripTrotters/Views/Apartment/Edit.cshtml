@@ -1,15 +1,9 @@
 ﻿@using TripTrotters.ViewModels
 @model EditApartmentViewModel
 
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
-
-<form method=  "post" asp-action = "Edit" enctype="multipart/form-data"/>
+<form method=  "post" asp-action = "Edit" >
 <input type = "hidden" value= "AdressId" id="AdressId"/>
+
 <div class=" form-group">
     <label asp-for = "Title">Title</label>
     <input asp-for = "Title" class="form-control" id=" placeholder="Enter apartment name">
@@ -26,36 +20,39 @@
     <label asp-for = "Price">Price</label>
     <input asp-for = "Price" class="form-control" id=" placeholder="Enter apartment price">
     <span asp-validation-for = "Price" class = "text-danger"></span>
-
 </div>
 
 <div class=" form-group">
-    <label asp-for = "Address.Country">City</label>
-    <input asp-for = "Address.Country" class="form-control" id=" placeholder="Enter apartment country">
-    <span asp-validation-for = "Address.Country" class = "text-danger"></span>
-
+    <label asp-for = "Country">Country</label>
+    <input asp-for = "Country" class="form-control" id=" placeholder="Enter apartment country">
+    <span asp-validation-for = "Country" class = "text-danger"></span>
 </div>
 
 <div class=" form-group">
-    <label asp-for = "Address.City">Country</label>
-    <input asp-for = "Address.City" class="form-control" id=" placeholder="Enter apartment city>
-    <span asp-validation-for = "Address.City" class = "text-danger"></span>
-
+    <label asp-for = "City">City</label>
+    <input asp-for = "City" class="form-control" id=" placeholder="Enter apartment city>
+    <span asp-validation-for = "City" class = "text-danger"></span>
 </div>
 
 <div class=" form-group">
-    <label asp-for = "Address.Street">Street</label>
-    <input asp-for = "Address.Street" class="form-control" id=" placeholder=" Enter apartment street>
-    <span asp-validation-for = "Address.Street" class = "text-danger"></span>
-
+    <label asp-for = "Street">Street</label>
+    <input asp-for = "Street" class="form-control" id=" placeholder=" Enter apartment street>
+    <span asp-validation-for = "Street" class = "text-danger"></span>
 </div>
 
 <div class=" form-group">
-    <label asp-for = "Address.StreetNumber">StreetNumber</label>
-    <input asp-for = "Address.StreetNumber" class="form-control" id=" placeholder=" Enter apartment city>
-    <span asp-validation-for = "Address.StreetNumber" class = "text-danger"></span>
-
+    <label asp-for = "StreetNumber">StreetNumber</label>
+    <input asp-for = "StreetNumber" class="form-control" id=" placeholder=" Enter apartment city>
+    <span asp-validation-for = "StreetNumber" class = "text-danger"></span>
 </div>
+
+
+    <button type="submit" class="btn btn-primary">Add Apartment</button>
+
+</form>
+
+
+        
 
 
 

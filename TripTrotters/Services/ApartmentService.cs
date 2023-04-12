@@ -50,8 +50,9 @@ namespace TripTrotters.Services
         }
 
         public bool Update(Apartment ap)
-        {
-            throw new NotImplementedException();
+        { 
+            _context.Update(ap);
+            return Save();
         }
     }
 }
