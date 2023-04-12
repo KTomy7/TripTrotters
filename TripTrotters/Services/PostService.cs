@@ -35,9 +35,9 @@ namespace TripTrotters.Services
 			return await _context.Posts.Include(a => a.Apartment).ToListAsync();
 		}
 
-		public Task<IEnumerable<Post>> GetAllbyID(int UserId)
+		public async Task<IEnumerable<Post>> GetAllbyUser(int UserId)
 		{
-			throw new NotImplementedException();
+			return await _context.Posts.Include(a => a.Apartment).Include(u => u.User).Where(p => p.UserId == UserId).ToListAsync();
 		}
 
 		public async Task<Post> GetByIdAsync(int id)
@@ -53,6 +53,11 @@ namespace TripTrotters.Services
 		public bool Save()
 		{
 			return _context.SaveChanges() >= 0 ? true : false;
+		}
+
+		public async Task<IEnumerable<Post>> GetAllbyApartment(int ApartmentId)
+		{
+			return await _context.Posts.Include(a => a.Apartment).Include(u => u.User).Where(p => p.ApartmentId == ApartmentId).ToListAsync();
 		}
 
 		public bool Update(Post p)

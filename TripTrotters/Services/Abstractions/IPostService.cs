@@ -8,7 +8,8 @@ namespace TripTrotters.Services.Abstractions
 
 		Task<IEnumerable<Post>> GetAll();
 		Task<Post> GetByIdAsync(int id);
-		Task<IEnumerable<Post>> GetAllbyID(int UserId);
+		Task<IEnumerable<Post>> GetAllbyUser(int UserId);
+		Task<IEnumerable<Post>> GetAllbyApartment(int ApartmentID);
 
 		bool Add(Post p);
 		bool Update(Post p);

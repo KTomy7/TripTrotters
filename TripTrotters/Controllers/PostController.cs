@@ -20,11 +20,10 @@ namespace TripTrotters.Controllers
 		}
 		public async Task<IActionResult> Index()
 		{
-			IEnumerable<Post> posts = await _postService.GetAll();
+			IEnumerable<Post> posts = await _postService.GetAllbyApartment(22);
 			return View(posts);
 
 		}
-
 
 		public async Task<IActionResult> Detail(int id)
 		{
