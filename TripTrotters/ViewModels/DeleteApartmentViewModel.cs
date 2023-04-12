@@ -1,8 +1,6 @@
-﻿using TripTrotters.Models;
-
-namespace TripTrotters.ViewModels
+﻿namespace TripTrotters.ViewModels
 {
-    public class EditApartmentViewModel
+    public class DeleteApartmentViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

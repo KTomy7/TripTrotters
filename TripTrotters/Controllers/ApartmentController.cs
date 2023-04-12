@@ -89,16 +89,70 @@ namespace TripTrotters.Controllers
                 Description = apartment.Description,
                 Price = apartment.Price,
                 AddressId = apartment.AddressId,
-                Address = apartment.Address,
-                //URL = apartment.Image;
-                 Reviews = apartment.Reviews,
-                 Offers = apartment.Offers,
-                 Posts = apartment.Posts,
-
+                Country = apartment.Address.Country,
+                City = apartment.Address.City,
+                Street = apartment.Address.Street,
+                StreetNumber = apartment.Address.StreetNumber
             };
 
 
             return View(apartmentVM);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EditApartmentViewModel apartmentVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Failed to edit apartment");
+                return View("Edit", apartmentVM);
+
+                
+                var userApartment = await _apartmentService.GetByIdAsync(id);
+               // if(userApartment != null)
+                  //  try
+                    {
+                        //await _phtotService.DeletePhotoAsync(userApartment.Image);
+
+                    }
+                  //  catch (Exception ex)
+                    {
+                   //     ModelState.AddModelError("", "Could not delete photo");
+
+                    }
+                   // return View("Error");
+            }
+            Apartment apartment = await _apartmentService.GetByIdAsync(apartmentVM.Id);
+            if (apartment == null)
+                return View("Error");
+            apartment.Title = apartmentVM.Title;
+            apartment.Description = apartmentVM.Description;
+            apartment.Price = apartmentVM.Price;
+            apartment.Address.Country = apartmentVM.Country;
+            apartment.Address.City = apartmentVM.City;
+            apartment.Address.Street = apartmentVM.Street;
+            apartment.Address.StreetNumber = apartmentVM.StreetNumber;
+            _apartmentService.Update(apartment);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var apartmentDetails = await _apartmentService.GetByIdAsync(id);
+            if (apartmentDetails == null) return View("Error");
+            return View(apartmentDetails); 
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteApartment(int id)
+        {
+            var apartmentDetails = await _apartmentService.GetByIdAsync(id);
+            if (apartmentDetails == null) return View("Error");
+
+            _apartmentService.Delete(apartmentDetails);
+            return RedirectToAction("Index");
+
+        }
     }
+
 }
