@@ -3,30 +3,33 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
+using TripTrotters.Services;
+using TripTrotters.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<TripTrottersDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection"));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection"));
 });
 builder.Services.AddIdentity<User, IdentityRole<int>>()
-    .AddEntityFrameworkStores<TripTrottersDbContext>();
+	.AddEntityFrameworkStores<TripTrottersDbContext>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+	.AddCookie();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Home/Error");
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
 }
 
 
@@ -38,8 +41,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 
