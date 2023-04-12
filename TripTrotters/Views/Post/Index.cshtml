@@ -32,12 +32,9 @@
                             <div class="btn-group">
                                 <a asp-controller="post" asp-action="Detail" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">View</a>
                                 <a asp-controller="post" asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                    <div class="form-group">
-                                        <form action="Delete" method="post">
-                                            <input type="hidden" asp-for="@item.Id" />
-                                            <input type="submit" value="Delete" class="btn btn-sm btn-outline-secondary" />
-                                        </form>
-                                    </div>
+                                <a asp-controller="post" asp-action="Delete" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
+
+
                             </div>
                             
                         </div>
