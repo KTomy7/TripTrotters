@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IApartmentService, ApartmentService>();
 builder.Services.AddDbContext<TripTrottersDbContext>(options =>
 {
