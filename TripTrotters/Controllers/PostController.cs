@@ -30,5 +30,29 @@ namespace TripTrotters.Controllers
 			Post post = await _postService.GetByIdAsync(id);
 			return View(post);
 		}
+
+		public async Task<IActionResult> Create(Post p)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(p);
+			}
+
+			_postService.Add(p);
+
+			return RedirectToAction("Index");
+		}
+
+		public async Task<IActionResult> Update(Post p)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(p);
+			}
+
+			_postService.Update(p);
+
+			return RedirectToAction("Index");
+		}
 	}
 }
