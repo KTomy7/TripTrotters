@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
 using TripTrotters.Services.Abstractions;
+using TripTrotters.ViewModels;
 
 namespace TripTrotters.Controllers
 {
@@ -10,6 +11,7 @@ namespace TripTrotters.Controllers
     {
 
         private readonly IOfferService _offerService;
+        private readonly IApartmentService _apartmentService;
 
         public OfferController(IOfferService offerService)
         {
@@ -30,6 +32,31 @@ namespace TripTrotters.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateOfferViewModel offerVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(offerVM);
+            }
+
+            Offer offer = new Offer
+            {
+                Title = offerVM.Title,
+                Description = offerVM.Description,
+                StartDate = offerVM.StartDate,
+                EndDate = offerVM.EndDate,
+                //TREBE LUAT USERU CURENT
+                AgentId = 3,
+                ApartmentId = offerVM.ApartmentId,
+
+            };
+
+            _offerService.Add(offer);
+
+            return RedirectToAction("Index");
         }
     }
 }
