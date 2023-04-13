@@ -10,6 +10,7 @@ using System.Net;
 using TripTrotters.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace TripTrotters.Controllers
 {
@@ -18,14 +19,16 @@ namespace TripTrotters.Controllers
         private readonly TripTrottersDbContext _context;
         private readonly IPostService _postService;
         private readonly IApartmentService _apartmentService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
 
-        public PostController(IPostService postService, IApartmentService apartmentService)
+        public PostController(IPostService postService, IApartmentService apartmentService, IHttpContextAccessor httpContextAccessor)
         {
 
             _postService = postService;
             _apartmentService = apartmentService;
+            _httpContextAccessor = httpContextAccessor;
 
         }
         public async Task<IActionResult> Index()
@@ -44,7 +47,9 @@ namespace TripTrotters.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var currentUI = _httpContextAccessor.HttpContext.User.GetUserId();
+            var postViewModel = new CreatePostViewModel { UserId = int.Parse(currentUI) };
+            return View(postViewModel);
         }
 
         [HttpPost]
@@ -62,7 +67,7 @@ namespace TripTrotters.Controllers
                 Title = postViewModel.Title,
                 Description = postViewModel.Description,
                 ApartmentId = postViewModel.ApartmentId,
-                UserId = 1,
+                UserId = postViewModel.UserId,
 
 
             };
