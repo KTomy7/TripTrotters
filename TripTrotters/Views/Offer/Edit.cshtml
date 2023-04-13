@@ -5,8 +5,7 @@
 @inject IApartmentService _apartmentService;
 @{
 }
-<form method = "post"  asp-action = "Create">
-    <input type="hidden" id="AgentId" name="AgentId" asp-for="AgentId" />
+<form method = "post"  asp-action = "Edit">
     <div class="form-group">
         <label asp-for="Title">Title</label>
         <input asp-for = "Title" class="form-control" id= placeholder="Enter offer name">
@@ -42,6 +41,6 @@
             </select>
         <span asp-validation-for="ApartmentId" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Add Offer</button>
+    <button type="submit" class="btn btn-primary">Edit Offer</button>
 
 </form>
