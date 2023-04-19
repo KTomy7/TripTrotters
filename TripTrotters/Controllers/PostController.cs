@@ -1,15 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
-using System.Net;
-using TripTrotters.Services;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace TripTrotters.Controllers
 {
@@ -18,14 +11,16 @@ namespace TripTrotters.Controllers
         private readonly TripTrottersDbContext _context;
         private readonly IPostService _postService;
         private readonly IApartmentService _apartmentService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
 
-        public PostController(IPostService postService, IApartmentService apartmentService)
+        public PostController(IPostService postService, IApartmentService apartmentService, IHttpContextAccessor httpContextAccessor)
         {
 
             _postService = postService;
             _apartmentService = apartmentService;
+            _httpContextAccessor = httpContextAccessor;
 
         }
         public async Task<IActionResult> Index()
@@ -44,7 +39,9 @@ namespace TripTrotters.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
+            var postViewModel = new CreatePostViewModel { UserId = int.Parse(curUserId) };
+            return View(postViewModel);
         }
 
         [HttpPost]
@@ -62,9 +59,7 @@ namespace TripTrotters.Controllers
                 Title = postViewModel.Title,
                 Description = postViewModel.Description,
                 ApartmentId = postViewModel.ApartmentId,
-                UserId = 1,
-
-
+                UserId = postViewModel.UserId,
             };
 
             _postService.Add(post);
