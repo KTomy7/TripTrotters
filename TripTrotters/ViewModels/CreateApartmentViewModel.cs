@@ -19,6 +19,8 @@ namespace TripTrotters.ViewModels
         public string Street { get; set; }
 
         public int StreetNumber { get; set; }
+
+
     }
-    }
+}
 
