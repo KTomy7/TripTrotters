@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using TripTrotters.Models;
 
-namespace TripTrotters.Models
+namespace TripTrotters.ViewModels
 {
-    public class Post
+    public class CreatePostViewModel
     {
-
         public int Id { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
@@ -12,11 +11,8 @@ namespace TripTrotters.Models
         public int Likes { get; set; }
         public DateTime Date { get; set; }
         public List<Comment>? Comments { get; set; }
-        [ForeignKey("Apartment")]
         public int ApartmentId { get; set; }
-        public Apartment? Apartment { get; set; }
-        [ForeignKey("User")]
         public int UserId { get; set; }
-        public User? User { get; set; }
+
     }
 }
