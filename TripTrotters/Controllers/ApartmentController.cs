@@ -153,6 +153,6 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
 
         }
-    }
+    } 
 
 }

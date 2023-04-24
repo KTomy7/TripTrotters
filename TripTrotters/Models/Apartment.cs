@@ -11,7 +11,12 @@ namespace TripTrotters.Models
         [ForeignKey("Address")]
         public int AddressId { get; set; }
         public Address Address { get; set; }
-        public List<Review>? Reviews { get; set; }
+        
+        [ForeignKey("Owner")]
+        public int OwnerId { get; set; }
+        public User Owner { get; set; }
+         
+        public List <Review>? Reviews { get; set; }
         public List<Post>? Posts { get; set; }
         public List<Offer>? Offers { get; set; }
     }
