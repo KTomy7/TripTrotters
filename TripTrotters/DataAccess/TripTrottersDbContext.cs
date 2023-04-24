@@ -38,6 +38,12 @@ namespace TripTrotters.DataAccess
                 .WithOne(r => r.Apartment)
                 .HasForeignKey(r => r.ApartmentId);
 
+            modelBuilder.Entity<Apartment>()
+                .HasOne(ow => ow.Owner)
+                .WithMany(a => a.Apartments)
+                .HasForeignKey(ow => ow.OwnerId);
+                //.OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Offer>()
                 .HasOne(o => o.Agent)
                 .WithMany(u => u.Offers)

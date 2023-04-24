@@ -8,5 +8,7 @@ namespace TripTrotters.Models
         public List<Offer>? Offers { get; set; }
         public List<Review>? Reviews { get; set; }
         public List<Comment>? Comments { get; set; }
+        public List <Apartment> Apartments { get; set; }
+
     }
 }
