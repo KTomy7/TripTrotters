@@ -11,6 +11,7 @@
 }
 <form method = "post"  asp-action = "Create">
     <div class="form-group">
+        <input type="hidden" id="OwnerId" name="OwnerId" asp-for="OwnerId"   />
         <label asp-for="Title">Title</label>
         <input asp-for = "Title" class="form-control" id=" placeholder="Enter apartment name">
         <span asp-validation-for = "Title" class = "text-danger"></span>

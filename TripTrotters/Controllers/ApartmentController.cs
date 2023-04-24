@@ -12,12 +12,15 @@ namespace TripTrotters.Controllers
         
         private readonly IApartmentService _apartmentService;
         private readonly IAddressService _addressService;
-        
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApartmentController( IApartmentService apService, IAddressService addressService)
+
+
+        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor)
         {
             _apartmentService = apService;
-            _addressService = addressService;   
+            _addressService = addressService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
       
@@ -35,7 +38,9 @@ namespace TripTrotters.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
+            var apartmentViewModel = new CreateApartmentViewModel { OwnerId = int.Parse(curUserId) };
+            return View(apartmentViewModel);
 
         }
 
@@ -49,6 +54,7 @@ namespace TripTrotters.Controllers
 
             Address address = new Address
             {   
+
                 Country = apartmentVM.Country,
                 City = apartmentVM.City,
                 Street = apartmentVM.Street,
@@ -62,12 +68,13 @@ namespace TripTrotters.Controllers
 
 
             Apartment apartment = new Apartment
-            {
+            {  
                 Title = apartmentVM.Title,
                 Description = apartmentVM.Description,
                 Price = apartmentVM.Price,
                 AddressId = address.Id,
                 Address = address,
+                OwnerId = apartmentVM.OwnerId
                 
       
             };
