@@ -22,7 +22,7 @@ namespace TripTrotters.Models
         public List<Post>? Posts { get; set; }
         public List<Offer>? Offers { get; set; }
         
-       // public IFormFile Image { get; set; }
+        public String Image { get; set; }
         //public List<Image>? Images { get; set; }
     }
 }

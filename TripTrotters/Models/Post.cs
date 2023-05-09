@@ -19,6 +19,6 @@ namespace TripTrotters.Models
         [ForeignKey("User")]
         public int UserId { get; set; }
         public User? User { get; set; }
-        public List<Image>? Images { get; set; }
+        public string?  Image { get; set; }
     }
 }

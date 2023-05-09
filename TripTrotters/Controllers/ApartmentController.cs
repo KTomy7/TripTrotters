@@ -74,7 +74,7 @@ namespace TripTrotters.Controllers
                     AddressId = address.Id,
                     Address = address,
                     OwnerId = apartmentVM.OwnerId,
-                   // Image = result.Url.ToString()
+                    Image = result.Url.ToString()
                 };
 
                 _apartmentService.Add(apartment);
