@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
 using System.Net;
