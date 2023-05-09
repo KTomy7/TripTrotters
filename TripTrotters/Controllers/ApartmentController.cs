@@ -13,14 +13,16 @@ namespace TripTrotters.Controllers
         private readonly IApartmentService _apartmentService;
         private readonly IAddressService _addressService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPhotoService _photoService;
 
 
 
-        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor)
+        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService )
         {
             _apartmentService = apService;
             _addressService = addressService;
             _httpContextAccessor = httpContextAccessor;
+            _photoService = photoService;
         }
 
       
@@ -47,42 +49,53 @@ namespace TripTrotters.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateApartmentViewModel apartmentVM)
         { 
-            if(!ModelState.IsValid)
+            if(ModelState.IsValid)
             {
-                return View(apartmentVM);
+                var result = await _photoService.AddPhotoAsync(apartmentVM.Image);
+               // var Images  = result.Url.ToString().Split('/');
+                Address address = new Address
+                {
+
+                    Country = apartmentVM.Country,
+                    City = apartmentVM.City,
+                    Street = apartmentVM.Street,
+                    StreetNumber = apartmentVM.StreetNumber,
+
+                };
+
+                _addressService.Add(address);
+
+
+                Apartment apartment = new Apartment
+                {
+                    Title = apartmentVM.Title,
+                    Description = apartmentVM.Description,
+                    Price = apartmentVM.Price,
+                    AddressId = address.Id,
+                    Address = address,
+                    OwnerId = apartmentVM.OwnerId,
+                   // Image = result.Url.ToString()
+                };
+
+                _apartmentService.Add(apartment);
+
+               // Image image = new Image
+                //{
+                   // Location = result.Url.ToString(),
+                   // ApartmentId = apartmentVM.Id,
+               // };
+
+            
+
+                return RedirectToAction("Index");
+                //return View(apartmentVM);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Photo upload failed");
             }
 
-            Address address = new Address
-            {   
-
-                Country = apartmentVM.Country,
-                City = apartmentVM.City,
-                Street = apartmentVM.Street,
-                StreetNumber = apartmentVM.StreetNumber,
-               
-            };
-
-
-
-            _addressService.Add(address); 
-
-
-            Apartment apartment = new Apartment
-            {  
-                Title = apartmentVM.Title,
-                Description = apartmentVM.Description,
-                Price = apartmentVM.Price,
-                AddressId = address.Id,
-                Address = address,
-                OwnerId = apartmentVM.OwnerId
-                
-      
-            };
-
-            _apartmentService.Add(apartment);
-
-
-            return RedirectToAction("Index");
+            return View(apartmentVM);
         }
 
         public async Task<IActionResult> Edit(int id)
