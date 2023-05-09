@@ -90,7 +90,7 @@ namespace TripTrotters.Controllers
                 Title = post.Title,
                 Description = post.Description,
                 ApartmentId = post.ApartmentId,
-                UserId = 1,
+
 
             };
 
