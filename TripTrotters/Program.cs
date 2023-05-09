@@ -14,6 +14,7 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IApartmentService, ApartmentService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddDbContext<TripTrottersDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection"));

@@ -3,6 +3,7 @@ using TripTrotters.DataAccess;
 using TripTrotters.Models;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
+using System.Linq;
 
 namespace TripTrotters.Controllers
 {
@@ -11,21 +12,27 @@ namespace TripTrotters.Controllers
         private readonly TripTrottersDbContext _context;
         private readonly IPostService _postService;
         private readonly IApartmentService _apartmentService;
+        private readonly ICommentService _commentService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
 
-        public PostController(IPostService postService, IApartmentService apartmentService, IHttpContextAccessor httpContextAccessor)
+        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor)
         {
 
             _postService = postService;
             _apartmentService = apartmentService;
+            _commentService = commentService;
             _httpContextAccessor = httpContextAccessor;
 
         }
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = await _postService.GetAll();
+            foreach (Post post in posts)
+            {
+                post.Comments =  _commentService.GetAllByPostId(post.Id).ToList();
+            }
             return View(posts);
 
         }
@@ -57,6 +64,9 @@ namespace TripTrotters.Controllers
             Post post = new Post
             {
                 Title = postViewModel.Title,
+                Date = DateTime.Now,
+                Likes = 0,
+                //budget?
                 Description = postViewModel.Description,
                 ApartmentId = postViewModel.ApartmentId,
                 UserId = postViewModel.UserId,

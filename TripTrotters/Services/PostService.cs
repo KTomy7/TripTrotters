@@ -28,7 +28,7 @@ namespace TripTrotters.Services
 
         public async Task<IEnumerable<Post>> GetAll()
         {
-            return await _context.Posts.Include(a => a.Apartment).ToListAsync();
+            return await _context.Posts.Include(a => a.Apartment).Include(u =>u.User).ToListAsync();
         }
 
         public async Task<IEnumerable<Post>> GetAllbyUser(int UserId)
