@@ -4,7 +4,7 @@
 
 @inject IApartmentService _apartmentService;
 
-<form method="post" asp-action="Create">
+<form method="post" asp-action="Create" enctype="multipart/form-data">
     <div class="form-group">
         <label asp-for="Title">Title</label>
         <input asp-for="Title" class="form-control" id=" placeholder="Enter the title of the post">
@@ -26,8 +26,16 @@
             }
         </select>
         <span asp-validation-for="ApartmentId" class="text-danger"></span>
+
+
     </div>
 
+    <div class="form-group">
+        <label asp-for="Image">Image</label>
+        <input asp-for="Image" type="file" class="form-control" placeholder="Image">
+        <span asp-validation-for="Image" class="text-danger"></span>
+
+    </div>
 
 
     <button type="submit" class="btn btn-primary">Add Post</button>
