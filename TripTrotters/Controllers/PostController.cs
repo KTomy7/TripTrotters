@@ -67,6 +67,9 @@ namespace TripTrotters.Controllers
                 Title = postViewModel.Title,
                 Description = postViewModel.Description,
                 ApartmentId = postViewModel.ApartmentId,
+                Budget = postViewModel.Budget,
+                Date = DateTime.Now,
+                Likes = 0,
                 UserId = postViewModel.UserId,
 
 
