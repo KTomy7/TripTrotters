@@ -4,6 +4,7 @@ using TripTrotters.Models;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace TripTrotters.Controllers
 {
@@ -33,6 +34,7 @@ namespace TripTrotters.Controllers
             {
                 post.Comments =  _commentService.GetAllByPostId(post.Id).ToList();
             }
+
             return View(posts);
 
         }
@@ -115,6 +117,18 @@ namespace TripTrotters.Controllers
 
             _postService.Update(post);
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateLike(int id, EditPostViewModel editPostViewModel)
+        {
+            Post post = await _postService.GetByIdAsync(editPostViewModel.Id);
+            if(post == null)
+                { return View("Error"); }
+            post.Likes++;
+            _postService.Update(post);
+
+            return RedirectToAction("Index", "Post");
         }
 
         public async Task<IActionResult> Delete(int id)

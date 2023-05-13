@@ -1,9 +1,14 @@
-﻿@model IEnumerable<Post>
+﻿@using TripTrotters.ViewModels;
+
+@model IEnumerable<Post>
+    @*@model PostsAndCommentsViewModel*@
 @{
     int postNo = 1;
+    int commNo = 1;
+    int commIteration = 1;
 }
 <script>
-    $(document).ready(function () {
+   $(document).ready(function (){
         //Set comments toggle for each post
         @for(int i = 1; i <= Model.Count(); i++)
         {
@@ -11,7 +16,7 @@
             string commentAddId = $"#commentAdd{i}";
             string commentsListId = $"#commentsList{i}";
             string noOfCommentsBtnId = $"#noOfCommentsBtn{i}";
-
+    
             <text>
                     $(document).on('click', '@commentBtnId', function () {
                         $('@commentAddId').toggle();
@@ -23,7 +28,29 @@
             </text>
         }
 
+        @foreach(Post post in Model)
+        {
+        int totalComments = post.Comments.Count + commIteration;
+        while (commIteration <= totalComments)
+            {
+            string commentTextId = $"#commentsText{commIteration}";
+            string commentEditId = $"#commentEdit{commIteration}";
+            string commentEditBtnId = $"#commentEditBtn{commIteration}";
+
+                <text>
+                    $(document).on('click', '@commentEditBtnId', function () {
+                        $('@commentTextId').toggle();
+                    });
+
+                    $(document).on('click', '@commentEditBtnId', function () {
+                        $('@commentEditId').toggle();
+                    });
+                </text>
+            commIteration++;
+            }   
+    }
     });
+
 </script>
 
 
@@ -31,6 +58,7 @@
 
     @foreach(var item in Model)
     {
+
         <div class="container">
             <div class="post-body">
                 <div class="user-info">
@@ -87,10 +115,10 @@
                 </div>
                 <div class="likes-comment-buttons">
                     <div class="like">
-                        <a asp-controller="post" asp-action="Like" asp-route-id="@item.Id" type="button" class="btn btn-light">
-                            <span class="far fa-thumbs-up"></span>
-                            <i>Like</i>
-                        </a>
+                        @{
+                            ViewData["Id"] = item.Id;
+                        }
+                        @Html.Partial("UpdateLike.cshtml", new EditPostViewModel{ Id = (int) ViewData["Id"]})
                     </div>
                     <div class="comment-button">
                         <button id="@string.Format("commentBtn{0}",postNo)" type="button" class="btn btn-light">
@@ -102,15 +130,9 @@
 
                 <div id="@string.Format("commentAdd{0}",postNo)" style="display:none">
                     <div class="comment-form">
-                        <form>
-                            <div class="form-group row">
-                                <div class="col-lg-10 p-1">
-                                    <input class="form-control" type="text" placeholder="Write a comment...">
-                                </div>
-                                <button class="col-2 p-1 btn btn-success btn-sm" type="submit">Add</button>
+                        @{ ViewData["postId"] = item.Id; }
+                        @Html.Partial("~/Views/Comment/Create.cshtml", new CommentViewModel{ PostId = (int)ViewData["postId"]})
 
-                            </div>
-                        </form>
                     </div>
                 </div>
                 <div id="@string.Format("commentsList{0}",postNo)" style="display:none">
@@ -121,10 +143,36 @@
                                 <div class="comments-block-details">
                                     <h3 class="comments-block-details-user">@comm.User</h3>
                                     <div class="comments-block-details-date">@comm.Date</div>
+                                    @if (comm.UserId == int.Parse(User.GetUserId()))
+                                    {
+                                        <div class="comments-block-details-edit">
+                                            <button class="btn" id="@string.Format("commentEditBtn{0}",commNo)">Edit</button>
+                                        </div>
+                                    }
+                                    @if (item.UserId == int.Parse(User.GetUserId()) || comm.UserId == int.Parse(User.GetUserId()))
+                                    {
+                                        <div class="comments-block-details-delete">
+                                            @{ ViewData["Id"] = comm.Id; }
+                                            @Html.Partial("~/Views/Comment/Delete.cshtml", new CommentViewModel{ Id = (int)ViewData["Id"]})
+                                        </div>
+                                    }
+
                                 </div>
-                                <div class="comments-block-text">
+                                <div class="comments-block-text" id="@string.Format("commentsText{0}",commNo)">
                                     @comm.Text
                                 </div>
+                                @if(comm.UserId == int.Parse(User.GetUserId()))
+                                {
+                                    <div id="@string.Format("commentEdit{0}",commNo)" style="display:none">
+                                        @{
+                                            ViewData["Id"] = comm.Id;
+                                            ViewData["Text"] = comm.Text;
+                                        }
+                                        @Html.Partial("~/Views/Comment/Edit.cshtml", new CommentViewModel{ Id = (int)ViewData["Id"], Text = (string) ViewData["Text"]})
+                                    </div>
+                                    
+                                }
+
                                 <div class="comments-block-like">
                                     @if(comm.Like > 0)
                                     {
@@ -133,6 +181,7 @@
                                     <button>Like</button>
                                 </div>
                             </div>
+                            commNo++;
                         }
                     </div>
                 </div>

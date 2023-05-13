@@ -1,0 +1,16 @@
+﻿@using TripTrotters.ViewModels;
+@model EditPostViewModel;
+@{
+}
+
+<form asp-controller="Post" asp-action="UpdateLike" asp-route-Id="@Model.Id" method="post">
+    <input type="hidden" id="UserId" name="UserId" asp-for="UserId" />
+    <input asp-for="Id" type="hidden" value="@Model.Id"/>
+    <input asp-for="Likes" type="hidden" value="@Model.Likes"/>
+    <div class="form-group">
+        <button class="btn btn-light">
+            <span class="far fa-thumbs-up"></span>
+            <i>Like</i>
+        </button>
+    </div>
+</form>

@@ -124,18 +124,28 @@ body {
 }
 .comments-block-details-user {
     font-size: 18px;
+    position:relative;
+    top:1px;
 }
 
 .comments-block-details-date {
     font-size: 12px;
     position: relative;
     display: inline-block;
+    margin-right:10px;
     left: 10px;
-    top: 1px;
+    top: 4px;
+}
+.comments-block-details-delete {
+    margin-left: 10px;
+
+}
+.comments-block-details-edit {
+    margin-left: 20px;
 }
 
-.comments-block-like{
-    display:flex;
+.comments-block-like {
+    display: flex;
 }
 .comments-block-like-count{
     margin-right: 15px;

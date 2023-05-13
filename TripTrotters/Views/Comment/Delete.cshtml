@@ -1,0 +1,11 @@
+﻿@using TripTrotters.ViewModels;
+@model CommentViewModel;
+@{
+}
+<form asp-controller="Comment" asp-action="Delete" asp-route-Id="@Model.Id" method="post">
+    <input type="hidden" id="UserId" name="UserId" asp-for="UserId" />
+    <input asp-for="Id" type="hidden" />
+    <div class="form-group">
+        <input type="submit" value="Delete" class="btn" style="padding:0px"/>
+    </div>
+</form>
