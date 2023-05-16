@@ -68,6 +68,37 @@ namespace TripTrotters.DataAccess
                 .HasOne(a => a.Address)
                 .WithOne(ad => ad.Apartment)
                 .HasForeignKey<Apartment>(a => a.AddressId);
+
+            modelBuilder.Entity<UserPostLike>()
+                .HasKey(upl => new { upl.UserId, upl.PostId });
+
+            modelBuilder.Entity<UserPostLike>()
+                .HasOne(upl => upl.User)
+                .WithMany(upl => upl.LikedPosts)
+                .HasForeignKey(upl => upl.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserPostLike>()
+                .HasOne(upl => upl.Post)
+                .WithMany(upl => upl.UsersLikes)
+                .HasForeignKey(upl => upl.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserCommentLike>()
+                .HasKey(ucl => new { ucl.UserId, ucl.CommentId });
+
+            modelBuilder.Entity<UserCommentLike>()
+                .HasOne(ucl => ucl.User)
+                .WithMany(ucl => ucl.LikedComments)
+                .HasForeignKey (ucl => ucl.UserId)
+                .OnDelete (DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserCommentLike>()
+                .HasOne(ucl => ucl.Comment)
+                .WithMany(ucl => ucl.UsersLikes)
+                .HasForeignKey(ucl => ucl.CommentId)
+                .OnDelete (DeleteBehavior.NoAction);
+    
         }
 
         public DbSet<Post> Posts { get; set; }
@@ -76,5 +107,7 @@ namespace TripTrotters.DataAccess
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Review> Rewies { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<UserPostLike> UserPostLikes { get; set; }
+        public DbSet<UserCommentLike> UserCommentLikes { get; set; }
     }
 }

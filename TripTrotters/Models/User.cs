@@ -10,5 +10,7 @@ namespace TripTrotters.Models
         public List<Review>? Reviews { get; set; }
         public List<Comment>? Comments { get; set; }
         public List <Apartment>? Apartments { get; set; }
+        public ICollection <UserPostLike> LikedPosts { get; set; }
+        public ICollection <UserCommentLike> LikedComments { get; set; }
     }
 }
