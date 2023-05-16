@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TripTrotters.DataAccess;
 
@@ -11,9 +12,11 @@ using TripTrotters.DataAccess;
 namespace TripTrotters.Migrations
 {
     [DbContext(typeof(TripTrottersDbContext))]
-    partial class TripTrottersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230507130438_AddImagesApartmentPost")]
+    partial class AddImagesApartmentPost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,10 +201,6 @@ namespace TripTrotters.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
@@ -253,6 +252,33 @@ namespace TripTrotters.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("TripTrotters.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ApartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApartmentId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("TripTrotters.Models.Offer", b =>
@@ -310,9 +336,6 @@ namespace TripTrotters.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Likes")
@@ -523,6 +546,17 @@ namespace TripTrotters.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TripTrotters.Models.Image", b =>
+                {
+                    b.HasOne("TripTrotters.Models.Apartment", null)
+                        .WithMany("Images")
+                        .HasForeignKey("ApartmentId");
+
+                    b.HasOne("TripTrotters.Models.Post", null)
+                        .WithMany("Images")
+                        .HasForeignKey("PostId");
+                });
+
             modelBuilder.Entity("TripTrotters.Models.Offer", b =>
                 {
                     b.HasOne("TripTrotters.Models.User", "Agent")
@@ -588,6 +622,8 @@ namespace TripTrotters.Migrations
 
             modelBuilder.Entity("TripTrotters.Models.Apartment", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("Offers");
 
                     b.Navigation("Posts");
@@ -598,6 +634,8 @@ namespace TripTrotters.Migrations
             modelBuilder.Entity("TripTrotters.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("TripTrotters.Models.User", b =>

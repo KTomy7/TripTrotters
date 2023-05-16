@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
+using TripTrotters.Helpers;
 using TripTrotters.Models;
 using TripTrotters.Services;
 using TripTrotters.Services.Abstractions;
@@ -15,6 +16,8 @@ builder.Services.AddScoped<IApartmentService, ApartmentService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.Configure<ApCloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddDbContext<TripTrottersDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("TripTrottersDatabaseConnection"));
