@@ -8,16 +8,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TripTrotters.Services
 {
-    public class PhotoService : IPhotoService
+    public class CloudinaryImageService : ICloudinaryImageService
 
     {
         private readonly Cloudinary _cloudinary;
-        public PhotoService(IOptions<ApCloudinarySettings> config) 
+        public CloudinaryImageService(IOptions<ApCloudinarySettings> config) 
         {
             var acc = new Account(config.Value.CloudName, config.Value.ApiKey, config.Value.ApiSecret);
             _cloudinary = new Cloudinary(acc);
         }
-
      
         public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         { 

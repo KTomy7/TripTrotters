@@ -21,7 +21,7 @@ namespace TripTrotters.ViewModels
 
         public int StreetNumber { get; set; }
 
-        public IFormFile Image { get; set; }
+        public IEnumerable<IFormFile> Images { get; set; }
     }
 }
 
