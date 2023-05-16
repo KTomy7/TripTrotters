@@ -8,6 +8,8 @@ using TripTrotters.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace TripTrotters.Controllers
 {
@@ -16,22 +18,28 @@ namespace TripTrotters.Controllers
         private readonly TripTrottersDbContext _context;
         private readonly IPostService _postService;
         private readonly IApartmentService _apartmentService;
+        private readonly ICommentService _commentService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPhotoService _photoService;
 
+        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService)
 
-
-        public PostController(IPostService postService, IApartmentService apartmentService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService)
         {
 
             _postService = postService;
             _apartmentService = apartmentService;
+            _commentService = commentService;
             _httpContextAccessor = httpContextAccessor;
             _photoService = photoService;   
         }
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = await _postService.GetAll();
+            foreach (Post post in posts)
+            {
+                post.Comments =  _commentService.GetAllByPostId(post.Id).ToList();
+            }
+
             return View(posts);
 
         }
@@ -125,6 +133,18 @@ namespace TripTrotters.Controllers
 
             _postService.Update(post);
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateLike(int id, EditPostViewModel editPostViewModel)
+        {
+            Post post = await _postService.GetByIdAsync(editPostViewModel.Id);
+            if(post == null)
+                { return View("Error"); }
+            post.Likes++;
+            _postService.Update(post);
+
+            return RedirectToAction("Index", "Post");
         }
 
         public async Task<IActionResult> Delete(int id)
