@@ -12,15 +12,13 @@ namespace TripTrotters.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly TripTrottersDbContext _dbContext;
-        private readonly IPhotoService _photoService;
+        private readonly ICloudinaryImageService _cloudinaryImageService;
     
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, TripTrottersDbContext dbContext, IPhotoService photoservice)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ICloudinaryImageService cloudinaryImageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _dbContext = dbContext;
-            _photoService = photoservice;
+            _cloudinaryImageService = cloudinaryImageService;
 
         }
         
@@ -72,7 +70,7 @@ namespace TripTrotters.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _photoService.AddPhotoAsync(registerViewModel.Image);
+                var result = await _cloudinaryImageService.AddPhotoAsync(registerViewModel.Image);
 
 
                 var user = await _userManager.FindByEmailAsync(registerViewModel.EmailAddress);

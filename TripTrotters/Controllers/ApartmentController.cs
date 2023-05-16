@@ -9,20 +9,19 @@ namespace TripTrotters.Controllers
 {
     public class ApartmentController : Controller
     {
-        
         private readonly IApartmentService _apartmentService;
         private readonly IAddressService _addressService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IPhotoService _photoService;
+        private readonly ICloudinaryImageService _cloudinaryImageService;
+        private readonly IImageService _imageService;
 
-
-
-        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService )
+        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService)
         {
             _apartmentService = apService;
             _addressService = addressService;
             _httpContextAccessor = httpContextAccessor;
-            _photoService = photoService;
+            _cloudinaryImageService = cloudinaryImageService;
+            _imageService = imageService;
         }
 
       
@@ -51,20 +50,14 @@ namespace TripTrotters.Controllers
         { 
             if(ModelState.IsValid)
             {
-                var result = await _photoService.AddPhotoAsync(apartmentVM.Image);
-               // var Images  = result.Url.ToString().Split('/');
                 Address address = new Address
                 {
-
                     Country = apartmentVM.Country,
                     City = apartmentVM.City,
                     Street = apartmentVM.Street,
-                    StreetNumber = apartmentVM.StreetNumber,
-
+                    StreetNumber = apartmentVM.StreetNumber
                 };
-
                 _addressService.Add(address);
-
 
                 Apartment apartment = new Apartment
                 {
@@ -73,22 +66,22 @@ namespace TripTrotters.Controllers
                     Price = apartmentVM.Price,
                     AddressId = address.Id,
                     Address = address,
-                    OwnerId = apartmentVM.OwnerId,
-                    Image = result.Url.ToString()
+                    OwnerId = apartmentVM.OwnerId
                 };
-
                 _apartmentService.Add(apartment);
 
-               // Image image = new Image
-                //{
-                   // Location = result.Url.ToString(),
-                   // ApartmentId = apartmentVM.Id,
-               // };
-
-            
+                foreach (var item in apartmentVM.Images)
+                {
+                    var result = await _cloudinaryImageService.AddPhotoAsync(item);
+                    Image image = new Image
+                    {
+                        ImageUrl = result.Url.ToString(),
+                        ApartmentId = apartment.Id
+                    };
+                   _imageService.Add(image);
+                }
 
                 return RedirectToAction("Index");
-                //return View(apartmentVM);
             }
             else
             {
