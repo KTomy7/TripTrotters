@@ -17,16 +17,17 @@ namespace TripTrotters.Controllers
         private readonly IPostService _postService;
         private readonly IApartmentService _apartmentService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPhotoService _photoService;
 
 
 
-        public PostController(IPostService postService, IApartmentService apartmentService, IHttpContextAccessor httpContextAccessor)
+        public PostController(IPostService postService, IApartmentService apartmentService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService)
         {
 
             _postService = postService;
             _apartmentService = apartmentService;
             _httpContextAccessor = httpContextAccessor;
-
+            _photoService = photoService;   
         }
         public async Task<IActionResult> Index()
         {
@@ -54,13 +55,14 @@ namespace TripTrotters.Controllers
         {
 
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(postViewModel);
-            }
+                var result = await _photoService.AddPhotoAsync(postViewModel.Image);
+               
+            
 
-            Post post = new Post
-            {
+             Post post = new Post
+                {
                 Title = postViewModel.Title,
                 Description = postViewModel.Description,
                 ApartmentId = postViewModel.ApartmentId,
@@ -68,16 +70,24 @@ namespace TripTrotters.Controllers
                 Date = DateTime.Now,
                 Likes = 0,
                 UserId = postViewModel.UserId,
+                Image = result.Url.ToString(),
+                };
 
+                _postService.Add(post);
+                return RedirectToAction("Index");
 
-            };
+            }
+            else
+            {
+                ModelState.AddModelError("", "Photo upload failed");
+            }
 
-            _postService.Add(post);
+            return View(postViewModel);
+        
 
-            return RedirectToAction("Index");
-        }
+    }
 
-        public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int id)
         {
             Post post = await _postService.GetByIdAsync(id);
             if (post == null)

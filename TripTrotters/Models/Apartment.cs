@@ -8,6 +8,8 @@ namespace TripTrotters.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public int Price { get; set; }
+
+  
         [ForeignKey("Address")]
         public int AddressId { get; set; }
         public Address Address { get; set; }
@@ -19,5 +21,8 @@ namespace TripTrotters.Models
         public List <Review>? Reviews { get; set; }
         public List<Post>? Posts { get; set; }
         public List<Offer>? Offers { get; set; }
+        
+        public String Image { get; set; }
+        //public List<Image>? Images { get; set; }
     }
 }

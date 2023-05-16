@@ -10,6 +10,7 @@ namespace TripTrotters.Models
         public string? Description { get; set; }
         public double Budget { get; set; }
         public int Likes { get; set; }
+        
         public DateTime Date { get; set; }
         public List<Comment>? Comments { get; set; }
         [ForeignKey("Apartment")]
@@ -18,5 +19,6 @@ namespace TripTrotters.Models
         [ForeignKey("User")]
         public int UserId { get; set; }
         public User? User { get; set; }
+        public string?  Image { get; set; }
     }
 }
