@@ -68,6 +68,16 @@ namespace TripTrotters.DataAccess
                 .HasOne(a => a.Address)
                 .WithOne(ad => ad.Apartment)
                 .HasForeignKey<Apartment>(a => a.AddressId);
+
+            modelBuilder.Entity<Apartment>()
+                .HasMany(a => a.Images)
+                .WithOne(i => i.Apartment)
+                .HasForeignKey(i => i.ApartmentId);
+
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Images)
+                .WithOne(i => i.Post)
+                .HasForeignKey(i => i.PostId);
         }
 
         public DbSet<Post> Posts { get; set; }
@@ -76,5 +86,6 @@ namespace TripTrotters.DataAccess
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Review> Rewies { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Image> Images { get; set; }
     }
 }
