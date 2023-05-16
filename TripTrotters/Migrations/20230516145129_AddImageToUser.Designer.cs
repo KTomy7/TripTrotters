@@ -12,8 +12,8 @@ using TripTrotters.DataAccess;
 namespace TripTrotters.Migrations
 {
     [DbContext(typeof(TripTrottersDbContext))]
-    [Migration("20230516144254_AddNewFieldToAspNetUsers")]
-    partial class AddNewFieldToAspNetUsers
+    [Migration("20230516145129_AddImageToUser")]
+    partial class AddImageToUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -390,6 +390,9 @@ namespace TripTrotters.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
