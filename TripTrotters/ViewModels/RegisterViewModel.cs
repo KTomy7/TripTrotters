@@ -22,4 +22,6 @@ public class RegisterViewModel
     [Display(Name = "User Role")]
     [Required]
     public UserType UserRole { get; set; }
+
+    public IFormFile Image { get; set; }
 }
