@@ -69,6 +69,16 @@ namespace TripTrotters.DataAccess
                 .WithOne(ad => ad.Apartment)
                 .HasForeignKey<Apartment>(a => a.AddressId);
 
+            modelBuilder.Entity<Apartment>()
+                .HasMany(a => a.Images)
+                .WithOne(i => i.Apartment)
+                .HasForeignKey(i => i.ApartmentId);
+
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Images)
+                .WithOne(i => i.Post)
+                .HasForeignKey(i => i.PostId);
+                
             modelBuilder.Entity<UserPostLike>()
                 .HasKey(upl => new { upl.UserId, upl.PostId });
 
@@ -107,6 +117,7 @@ namespace TripTrotters.DataAccess
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Review> Rewies { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Image> Images { get; set; }
         public DbSet<UserPostLike> UserPostLikes { get; set; }
         public DbSet<UserCommentLike> UserCommentLikes { get; set; }
     }

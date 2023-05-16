@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TripTrotters.DataAccess;
 
@@ -11,9 +12,11 @@ using TripTrotters.DataAccess;
 namespace TripTrotters.Migrations
 {
     [DbContext(typeof(TripTrottersDbContext))]
-    partial class TripTrottersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230516173251_AddImagesTable")]
+    partial class AddImagesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -456,36 +459,6 @@ namespace TripTrotters.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TripTrotters.Models.UserCommentLike", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "CommentId");
-
-                    b.HasIndex("CommentId");
-
-                    b.ToTable("UserCommentLikes");
-                });
-
-            modelBuilder.Entity("TripTrotters.Models.UserPostLike", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "PostId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("UserPostLikes");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -647,44 +620,6 @@ namespace TripTrotters.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TripTrotters.Models.UserCommentLike", b =>
-                {
-                    b.HasOne("TripTrotters.Models.Comment", "Comment")
-                        .WithMany("UsersLikes")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("TripTrotters.Models.User", "User")
-                        .WithMany("LikedComments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TripTrotters.Models.UserPostLike", b =>
-                {
-                    b.HasOne("TripTrotters.Models.Post", "Post")
-                        .WithMany("UsersLikes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("TripTrotters.Models.User", "User")
-                        .WithMany("LikedPosts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TripTrotters.Models.Address", b =>
                 {
                     b.Navigation("Apartment")
@@ -702,17 +637,11 @@ namespace TripTrotters.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("TripTrotters.Models.Comment", b =>
-                {
-                    b.Navigation("UsersLikes");
-                });
-
             modelBuilder.Entity("TripTrotters.Models.Post", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("Images");
-                    b.Navigation("UsersLikes");
                 });
 
             modelBuilder.Entity("TripTrotters.Models.User", b =>
@@ -720,10 +649,6 @@ namespace TripTrotters.Migrations
                     b.Navigation("Apartments");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("LikedComments");
-
-                    b.Navigation("LikedPosts");
 
                     b.Navigation("Offers");
 

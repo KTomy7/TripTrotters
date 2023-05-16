@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
+using TripTrotters.Services;
+using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
 
 namespace TripTrotters.Controllers
@@ -10,13 +12,14 @@ namespace TripTrotters.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly TripTrottersDbContext _dbContext;
+        private readonly ICloudinaryImageService _cloudinaryImageService;
     
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, TripTrottersDbContext dbContext)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ICloudinaryImageService cloudinaryImageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _dbContext = dbContext;
+            _cloudinaryImageService = cloudinaryImageService;
+
         }
         
         public IActionResult Login()
@@ -65,29 +68,38 @@ namespace TripTrotters.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(registerViewModel);
-            }
+                var result = await _cloudinaryImageService.AddPhotoAsync(registerViewModel.Image);
 
-            var user = await _userManager.FindByEmailAsync(registerViewModel.EmailAddress);
-            if (user != null)
-            {
-                TempData["Error"] = "This email address already exists!";
-                return View(registerViewModel);
-            }
 
-            var newUser = new User()
-            {
-                UserName = registerViewModel.Username,
-                Email = registerViewModel.EmailAddress
-            };
-            var newUserResponse = await _userManager.CreateAsync(newUser, registerViewModel.Password);
-            if (newUserResponse.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(newUser, registerViewModel.UserRole.ToString());
+                var user = await _userManager.FindByEmailAsync(registerViewModel.EmailAddress);
+                if (user != null)
+                {
+                    TempData["Error"] = "This email address already exists!";
+                    return View(registerViewModel);
+                }
+
+                var newUser = new User()
+                {
+                    UserName = registerViewModel.Username,
+                    Email = registerViewModel.EmailAddress,
+                    ImageUrl = result.Url.ToString()
+                };
+
+                var newUserResponse = await _userManager.CreateAsync(newUser, registerViewModel.Password);
+                if (newUserResponse.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(newUser, registerViewModel.UserRole.ToString());
+                }
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            else
+     
+            {
+                ModelState.AddModelError("", "Photo upload failed");
+            }
+            return View(registerViewModel);
         }
 
         [HttpPost]

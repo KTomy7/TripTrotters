@@ -17,21 +17,24 @@ namespace TripTrotters.Controllers
 {
     public class PostController : Controller
     {
-        private readonly TripTrottersDbContext _context;
         private readonly IPostService _postService;
         private readonly IApartmentService _apartmentService;
         private readonly ICommentService _commentService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICloudinaryImageService _cloudinaryImageService;
+        private readonly IImageService _imageService;
         private readonly IPhotoService _photoService;
         private readonly IUserPostLikeService _userPostLikeService;
 
-        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService, IUserPostLikeService userPostLikeService)
+        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService)
 
         {
             _postService = postService;
             _apartmentService = apartmentService;
             _commentService = commentService;
             _httpContextAccessor = httpContextAccessor;
+            _cloudinaryImageService = cloudinaryImageService;   
+            _imageService = imageService;
             _photoService = photoService;   
             _userPostLikeService = userPostLikeService;
         }
@@ -62,43 +65,44 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreatePostViewModel postViewModel)
+        public async Task<IActionResult> Create(CreatePostViewModel createViewModel)
         {
-
-
             if (ModelState.IsValid)
             {
-                var result = await _photoService.AddPhotoAsync(postViewModel.Image);
-               
-            
-
-             Post post = new Post
+                Post post = new Post
                 {
-                Title = postViewModel.Title,
-                Description = postViewModel.Description,
-                ApartmentId = postViewModel.ApartmentId,
-                Budget = postViewModel.Budget,
-                Date = DateTime.Now,
-                Likes = 0,
-                UserId = postViewModel.UserId,
-                Image = result.Url.ToString(),
+                    Title = createViewModel.Title,
+                    Description = createViewModel.Description,
+                    ApartmentId = createViewModel.ApartmentId,
+                    Budget = createViewModel.Budget,
+                    Date = DateTime.Now,
+                    Likes = 0,
+                    UserId = createViewModel.UserId
                 };
-
                 _postService.Add(post);
-                return RedirectToAction("Index");
 
+                foreach (var item in createViewModel.Images)
+                {
+                    var result = await _cloudinaryImageService.AddPhotoAsync(item);
+                    Image image = new Image
+                    {
+                        ImageUrl = result.Url.ToString(),
+                        PostId = post.Id
+                    };
+                    _imageService.Add(image);
+                }
+
+                return RedirectToAction("Index");
             }
             else
             {
                 ModelState.AddModelError("", "Photo upload failed");
             }
 
-            return View(postViewModel);
-        
+            return View(createViewModel);
+        }
 
-    }
-
-    public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             Post post = await _postService.GetByIdAsync(id);
             if (post == null)
