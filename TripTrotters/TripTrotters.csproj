@@ -6,6 +6,13 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Interfaces\**" />
+	  <Content Remove="Interfaces\**" />
+	  <EmbeddedResource Remove="Interfaces\**" />
+	  <None Remove="Interfaces\**" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.20.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.15" />
@@ -23,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Apartment\" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>
