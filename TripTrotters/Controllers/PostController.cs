@@ -3,6 +3,11 @@ using TripTrotters.DataAccess;
 using TripTrotters.Models;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
+using System.Net;
+using TripTrotters.Services;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
@@ -48,8 +53,8 @@ namespace TripTrotters.Controllers
 
         public IActionResult Create()
         {
-            var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
-            var postViewModel = new CreatePostViewModel { UserId = int.Parse(curUserId) };
+            var currentUI = _httpContextAccessor.HttpContext.User.GetUserId();
+            var postViewModel = new CreatePostViewModel { UserId = int.Parse(currentUI) };
             return View(postViewModel);
         }
 
@@ -66,12 +71,14 @@ namespace TripTrotters.Controllers
             Post post = new Post
             {
                 Title = postViewModel.Title,
-                Date = DateTime.Now,
-                Likes = 0,
-                //budget?
                 Description = postViewModel.Description,
                 ApartmentId = postViewModel.ApartmentId,
+                Budget = postViewModel.Budget,
+                Date = DateTime.Now,
+                Likes = 0,
                 UserId = postViewModel.UserId,
+
+
             };
 
             _postService.Add(post);
@@ -92,7 +99,7 @@ namespace TripTrotters.Controllers
                 Title = post.Title,
                 Description = post.Description,
                 ApartmentId = post.ApartmentId,
-                UserId = 1,
+
 
             };
 
