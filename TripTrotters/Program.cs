@@ -18,6 +18,9 @@ builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
+builder.Services.AddScoped<IUserPostLikeService, UserPostLikeService>();
+builder.Services.AddScoped<IUserCommentLikeService, UserCommentLikeService>();
+
 builder.Services.Configure<ApCloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddDbContext<TripTrottersDbContext>(options =>
 {

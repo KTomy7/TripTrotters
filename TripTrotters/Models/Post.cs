@@ -18,5 +18,6 @@ namespace TripTrotters.Models
         public int UserId { get; set; }
         public User? User { get; set; }
         public List<Image>? Images { get; set; }
+		public ICollection<UserPostLike> UsersLikes { get; set; }
     }
 }

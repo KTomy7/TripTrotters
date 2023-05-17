@@ -10,6 +10,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
 
 namespace TripTrotters.Controllers
 {
@@ -21,8 +23,10 @@ namespace TripTrotters.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICloudinaryImageService _cloudinaryImageService;
         private readonly IImageService _imageService;
+        private readonly IPhotoService _photoService;
+        private readonly IUserPostLikeService _userPostLikeService;
 
-        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService)
+        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService)
 
         {
             _postService = postService;
@@ -31,6 +35,8 @@ namespace TripTrotters.Controllers
             _httpContextAccessor = httpContextAccessor;
             _cloudinaryImageService = cloudinaryImageService;   
             _imageService = imageService;
+            _photoService = photoService;   
+            _userPostLikeService = userPostLikeService;
         }
         public async Task<IActionResult> Index()
         {
@@ -109,8 +115,6 @@ namespace TripTrotters.Controllers
                 Title = post.Title,
                 Description = post.Description,
                 ApartmentId = post.ApartmentId,
-
-
             };
 
 
@@ -140,9 +144,27 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> UpdateLike(int id, EditPostViewModel editPostViewModel)
         {
             Post post = await _postService.GetByIdAsync(editPostViewModel.Id);
-            if(post == null)
-                { return View("Error"); }
-            post.Likes++;
+            var currentUId = int.Parse(_httpContextAccessor.HttpContext.User.GetUserId());
+
+            bool likedByUser = _userPostLikeService.PostLikedByUser(currentUId, post.Id);
+
+            if (likedByUser)
+            {
+                post.Likes--;
+                var userLike = _userPostLikeService.GetByUserAndPostId(currentUId, post.Id);
+                _userPostLikeService.Delete(userLike);
+            }
+            else
+            {
+                post.Likes++;
+                var newLike = new UserPostLike
+                {
+                    UserId = currentUId,
+                    PostId = post.Id,
+                };
+                _userPostLikeService.Add(newLike);
+            }
+
             _postService.Update(post);
 
             return RedirectToAction("Index", "Post");
