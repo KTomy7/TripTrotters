@@ -71,7 +71,7 @@ namespace TripTrotters.Controllers
             }
             var offerViewModel = new OfferViewModel
             {
-                /*Title = offer.Title,*/
+                Title = offer.Title,
                 Description = offer.Description,
                 StartDate = offer.StartDate,
                 EndDate = offer.EndDate,

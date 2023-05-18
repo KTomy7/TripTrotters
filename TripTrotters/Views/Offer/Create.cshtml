@@ -3,44 +3,45 @@
 @model OfferViewModel;
 
 @inject IApartmentService _apartmentService;
-@{
-}
-<form method = "post"  asp-action = "Create">
-    <input type="hidden" id="AgentId" name="AgentId" asp-for="AgentId" />
-    <div class="form-group">
-        <label asp-for="Title">Title</label>
-        <input asp-for = "Title" class="form-control" id= placeholder="Enter offer name">
-        <span asp-validation-for = "Title" class = "text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <input asp-for="Description" class="form-control" id= placeholder="Enter offer description">
-        <span asp-validation-for="Description" class="text-danger"></span>
 
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <h1 class="text-center mt-3">Create a new Offer</h1>
+        <form method="post"  asp-action="Create">
+            <input type="hidden" id="AgentId" name="AgentId" asp-for="AgentId" />
+            <div class="form-group mb-3">
+               <label asp-for="Title">Title:</label>
+               <input asp-for = "Title" class="form-control">
+               <span asp-validation-for = "Title" class = "text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Description">Description:</label>
+                <input asp-for="Description" type="text" class="form-control">
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="StartDate">Start Date:</label>
+                <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="EndDate">End Date:</label>
+                <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="ApartmentId" class="control-label">Select an Apartment:</label>
+                <select asp-for="ApartmentId" class="form-control">
+                    @foreach(var item in await _apartmentService.GetAll()){
+                        <option value="@item.Id">@item.Title</option>
+                    }
+                </select>
+                <span asp-validation-for="ApartmentId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-lg btn-primary">Add Offer</button>
+                <a class="btn btn-lg btn-secondary" asp-controller="Offer" asp-action="Index">Cancel</a>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="StartDate">Start Date</label>
-        <input asp-for="StartDate" type="datetime-local" class="form-control" />
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-
-    </div>
-        
-    <div class="form-group">
-        <label asp-for="EndDate">End Date</label>
-        <input asp-for="EndDate" type="datetime-local" class="form-control" />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ApartmentId" class="control-label"></label>
-            <select asp-for="ApartmentId" class="form-control">
-                @foreach(var item in await _apartmentService.GetAll()){
-                <option value="@item.Id">@item.Title</option>
-                }
-            </select>
-        <span asp-validation-for="ApartmentId" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Add Offer</button>
-
-</form>
+</div>
