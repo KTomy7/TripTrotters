@@ -20,29 +20,29 @@
                 <form method="post" asp-action="Register" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group mb-3">
-                        <label asp-for="Username" class="control-label">Username:</label>
+                        <label asp-for="Username" class="control-label">Username</label>
                         <input asp-for="Username" class="form-control" />
                         <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
                     
                     <div class="form-group mb-3">
-                        <label asp-for="EmailAddress" class="control-label">Email Address:</label>
+                        <label asp-for="EmailAddress" class="control-label">Email Address</label>
                         <input asp-for="EmailAddress" class="form-control" />
                         <span asp-validation-for="EmailAddress" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
-                        <label asp-for="Password" class="control-label">Password:</label>
+                        <label asp-for="Password" class="control-label">Password</label>
                         <input asp-for="Password" class="form-control" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
-                        <label asp-for="ConfirmPassword" class="control-label">Confirm Password:</label>
+                        <label asp-for="ConfirmPassword" class="control-label">Confirm Password</label>
                         <input asp-for="ConfirmPassword" class="form-control" />
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
-                        <label asp-for="UserRole" class="control-label">User Role:</label>
-                           <select asp-for="UserRole" class="form-control">
+                        <label asp-for="UserRole" class="control-label">Select your Role</label>
+                           <select asp-for="UserRole" class="form-select">
                                <option value="@UserType.Traveller">Traveller</option>
                                <option value="@UserType.Owner">Owner</option>
                                <option value="@UserType.Agent">Agent</option>
@@ -50,8 +50,8 @@
                         <span asp-validation-for="UserRole" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
-                        <label asp-for="Image">Profile Picture:</label>
-                        <input asp-for="Image" type="file" class="form-control" placeholder="Image">
+                        <label asp-for="Image">Upload Profile Picture</label>
+                        <input asp-for="Image" type="file" class="form-control">
                         <span asp-validation-for="Image" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
