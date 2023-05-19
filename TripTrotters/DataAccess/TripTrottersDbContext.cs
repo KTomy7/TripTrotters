@@ -9,11 +9,12 @@ namespace TripTrotters.DataAccess
     {
         public TripTrottersDbContext(DbContextOptions<TripTrottersDbContext> options) : base(options) { }
 
-        //rotected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //
-        //  optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=TripTrotters;User ID=sa; Password = sA-12345; TrustServerCertificate=True");
-        //
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
 
+            optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=TripTrotters;User ID=sa; Password = sA-12345; TrustServerCertificate=True");
+
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -47,7 +48,7 @@ namespace TripTrotters.DataAccess
                 .HasOne(ow => ow.Owner)
                 .WithMany(a => a.Apartments)
                 .HasForeignKey(ow => ow.OwnerId);
-                //.OnDelete(DeleteBehavior.Restrict);
+            //.OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Offer>()
                 .HasOne(o => o.Agent)
@@ -78,7 +79,7 @@ namespace TripTrotters.DataAccess
                 .HasMany(p => p.Images)
                 .WithOne(i => i.Post)
                 .HasForeignKey(i => i.PostId);
-                
+
             modelBuilder.Entity<UserPostLike>()
                 .HasKey(upl => new { upl.UserId, upl.PostId });
 
@@ -100,15 +101,15 @@ namespace TripTrotters.DataAccess
             modelBuilder.Entity<UserCommentLike>()
                 .HasOne(ucl => ucl.User)
                 .WithMany(ucl => ucl.LikedComments)
-                .HasForeignKey (ucl => ucl.UserId)
-                .OnDelete (DeleteBehavior.NoAction);
+                .HasForeignKey(ucl => ucl.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserCommentLike>()
                 .HasOne(ucl => ucl.Comment)
                 .WithMany(ucl => ucl.UsersLikes)
                 .HasForeignKey(ucl => ucl.CommentId)
-                .OnDelete (DeleteBehavior.NoAction);
-    
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
 
         public DbSet<Post> Posts { get; set; }

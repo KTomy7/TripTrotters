@@ -10,17 +10,25 @@
                     <div class="card mb-4 box-shadow">
                         @*<img class="card-img-top" src="@item.Image" alt="Card image cap">*@
                         <div class="card-body">
-
-                            <p class="card-text">@item.Title</p>
-                            <p class="card-text">@item.Price</p>
-                            <p class="card-text">@item.Description</p>
-                           
-
-
-                            <p class="card-text">@item.Address.Country</p>
-                            <p class="card-text">@item.Address.City</p>
-                            <p class="card-text">@item.Address.Street</p>
-                            <p class="card-text">@item.Address.StreetNumber</p>
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <img src="@item.Images" class="img-fluid rounded-start" alt="...">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@item.Title</h5>
+                                           <p class="card-text">@item.Description</p>
+                                            <p class="card-text">@item.Price</p>
+                                            <p class="card-text">@item.Address.Country</p>
+                                            <p class="card-text">@item.Address.City</p>
+                                            <p class="card-text">@item.Address.Street</p>
+                                            <p class="card-text">@item.Address.StreetNumber</p>
+                                          
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                          
                           
                             <div class="d-flex justify-content-between align-items-center">

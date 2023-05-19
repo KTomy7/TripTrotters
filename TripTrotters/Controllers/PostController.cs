@@ -32,8 +32,8 @@ namespace TripTrotters.Controllers
             _apartmentService = apartmentService;
             _commentService = commentService;
             _httpContextAccessor = httpContextAccessor;
-            _cloudinaryImageService = cloudinaryImageService;   
-            _imageService = imageService; 
+            _cloudinaryImageService = cloudinaryImageService;
+            _imageService = imageService;
             _userPostLikeService = userPostLikeService;
         }
         public async Task<IActionResult> Index()
@@ -41,7 +41,7 @@ namespace TripTrotters.Controllers
             IEnumerable<Post> posts = await _postService.GetAll();
             foreach (Post post in posts)
             {
-                post.Comments =  _commentService.GetAllByPostId(post.Id).ToList();
+                post.Comments = _commentService.GetAllByPostId(post.Id).ToList();
             }
 
             return View(posts);
