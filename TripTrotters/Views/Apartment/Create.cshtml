@@ -1,68 +1,62 @@
 ﻿@using TripTrotters.ViewModels;
 @model CreateApartmentViewModel
 
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<form method = "post"  asp-action = "Create" enctype="multipart/form-data">
-    <div class="form-group">
-        <input type="hidden" id="OwnerId" name="OwnerId" asp-for="OwnerId"   />
-        <label asp-for="Title">Title</label>
-        <input asp-for = "Title" class="form-control" id=" placeholder="Enter apartment name">
-        <span asp-validation-for = "Title" class = "text-danger"></span>
-       
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <h1 class="text-center mt-3">Add a new Apartment</h1>
+        <form method="post" asp-action ="Create" enctype="multipart/form-data">
+            <div class="form-group mb-3">
+                <input type="hidden" id="OwnerId" name="OwnerId" asp-for="OwnerId" />
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" class="form-control">
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Description">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Price">Price</label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input asp-for="Price" class="form-control">
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-9 mb-3">
+                    <label asp-for="Street">Street</label>
+                    <input asp-for="Street" class="form-control">
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-3 mb-3">
+                    <label asp-for="StreetNumber">Street Number</label>
+                    <input asp-for="StreetNumber" class="form-control">
+                    <span asp-validation-for="StreetNumber" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                    <label asp-for="Country">City</label>
+                    <input asp-for="Country" class="form-control">
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6 mb-3">
+                    <label asp-for="City">Country</label>
+                    <input asp-for="City" class="form-control">
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Images">Upload Images</label>
+                <input asp-for="Images" type="file" class="form-control" multiple>
+                <span asp-validation-for="Images" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-lg btn-primary">Create Apartment</button>
+                <a class="btn btn-lg btn-secondary" asp-controller="Apartment" asp-action="Index">Cancel</a>
+            </div>
+        </form>
     </div>
-<div class="form-group">
-        <label asp-for="Description">Description</label>
-        <input asp-for = "Description" class="form-control" id=" placeholder="Enter apartment description">
-        <span asp-validation-for = "Description" class = "text-danger"></span>
-
 </div>
-    <div class="form-group">
-        <label asp-for="Price">Price</label>
-        <input asp-for="Price"  class="form-control" id=" placeholder="Enter apartment price">
-        <span asp-validation-for = "Price" class = "text-danger"></span>
-
-    </div>
-
-
-<div class="form-group">
-        <label asp-for="Country">City</label>
-        <input asp-for = "Country" class="form-control" id=" placeholder="Enter apartment country">
-        <span asp-validation-for="Country" class="text-danger"></span>
-    
-
-</div>
-<div class="form-group">
-        <label asp-for="City">Country</label>
-        <input asp-for = "City" class="form-control" id=" placeholder="Enter apartment city>
-        <span asp-validation-for="City" class="text-danger"></span>
-
-</div>
-
-
-    <div class="form-group">
-        <label asp-for="Street">Street</label>
-        <input asp-for="Street" class="form-control" id=" placeholder=" Enter apartment street>
-        <span asp-validation-for="Street" class="text-danger"></span>
-
-</div>
-
-    <div class="form-group">
-        <label asp-for="StreetNumber">StreetNumber</label>
-        <input asp-for="StreetNumber" class="form-control" id=" placeholder=" Enter apartment city>
-        <span asp-validation-for="StreetNumber" class="text-danger"></span>
-
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Images">Image</label>
-        <input asp-for="Images" type = "file" class="form-control" multiple placeholder="Image">
-        <span asp-validation-for="Images" class="text-danger"></span>
-    </div>
-
-   
-    <button type="submit" class="btn btn-primary">Add Apartment</button>
-</form>
