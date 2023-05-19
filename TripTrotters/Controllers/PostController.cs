@@ -23,7 +23,6 @@ namespace TripTrotters.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICloudinaryImageService _cloudinaryImageService;
         private readonly IImageService _imageService;
-
         private readonly IUserPostLikeService _userPostLikeService;
 
         public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService)
@@ -35,7 +34,6 @@ namespace TripTrotters.Controllers
             _httpContextAccessor = httpContextAccessor;
             _cloudinaryImageService = cloudinaryImageService;
             _imageService = imageService;
-
             _userPostLikeService = userPostLikeService;
         }
         public async Task<IActionResult> Index()
