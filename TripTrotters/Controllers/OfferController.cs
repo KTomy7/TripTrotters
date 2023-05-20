@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
@@ -17,18 +18,23 @@ namespace TripTrotters.Controllers
             _offerService = offerService;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             IEnumerable<Offer> offers = await _offerService.GetAll();
             return View(offers);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             Offer offer = await _offerService.GetByIdAsync(id);
             return View(offer);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Agent")]
         public IActionResult Create()
         {
             if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
@@ -45,6 +51,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> Create(OfferViewModel offerViewModel)
         {
             if (!ModelState.IsValid)
@@ -66,6 +73,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> Edit(int id)
         {
             Offer offer = await _offerService.GetByIdAsync(id);
@@ -87,6 +95,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> Edit(int id, OfferViewModel offerViewModel)
         {
             if (!ModelState.IsValid)
@@ -112,7 +121,8 @@ namespace TripTrotters.Controllers
         }
 
         [HttpGet]
-         public async Task<IActionResult> Delete(int id)
+        [Authorize(Roles = "Agent")]
+        public async Task<IActionResult> Delete(int id)
         {
             var offerDetails = await _offerService.GetByIdAsync(id);
             if (offerDetails == null)
@@ -123,6 +133,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> DeleteOffer(int id)
         {
             var offerDetails = await _offerService.GetByIdAsync(id);

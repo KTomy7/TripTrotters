@@ -14,6 +14,5 @@ namespace TripTrotters.ViewModels
         public int ApartmentId { get; set; }
         public int UserId { get; set; }
         public IEnumerable<IFormFile> Images { get; set; }
-
     }
 }
