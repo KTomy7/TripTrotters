@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Immutable;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TripTrotters.Controllers
 {
@@ -34,6 +35,7 @@ namespace TripTrotters.Controllers
             _userPostLikeService = userPostLikeService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = await _postService.GetAll();
@@ -44,12 +46,15 @@ namespace TripTrotters.Controllers
             return View(posts);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             Post post = await _postService.GetByIdAsync(id);
             return View(post);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Traveller")]
         public IActionResult Create()
         {
             if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
@@ -66,6 +71,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Traveller")]
         public async Task<IActionResult> Create(CreatePostViewModel createViewModel)
         {
             if (ModelState.IsValid)
@@ -102,6 +108,8 @@ namespace TripTrotters.Controllers
             return View(createViewModel);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Traveller")]
         public async Task<IActionResult> Edit(int id)
         {
             Post post = await _postService.GetByIdAsync(id);
@@ -120,6 +128,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Traveller")]
         public async Task<IActionResult> Edit(int id, EditPostViewModel editPostViewModel)
         {
             if (!ModelState.IsValid)
@@ -178,6 +187,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Traveller")]
         public async Task<IActionResult> DeletePost(int id)
         {
             var postDetails = await _postService.GetByIdAsync(id);
