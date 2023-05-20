@@ -9,7 +9,6 @@ namespace TripTrotters.Controllers
 {
     public class OfferController : Controller
     {
-
         private readonly IOfferService _offerService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -32,9 +31,17 @@ namespace TripTrotters.Controllers
 
         public IActionResult Create()
         {
-            var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
-            var offerViewModel = new OfferViewModel { AgentId = int.Parse(curUserId) };
-            return View(offerViewModel);
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
+                var offerViewModel = new OfferViewModel { AgentId = int.Parse(curUserId) };
+                return View(offerViewModel);
+            }
         }
 
         [HttpPost]
@@ -44,7 +51,6 @@ namespace TripTrotters.Controllers
             {
                 return View(offerViewModel);
             }
-
             Offer offer = new Offer
             {
                 Title = offerViewModel.Title,
@@ -53,9 +59,7 @@ namespace TripTrotters.Controllers
                 EndDate = offerViewModel.EndDate,
                 AgentId = offerViewModel.AgentId,
                 ApartmentId = offerViewModel.ApartmentId,
-
             };
-
             _offerService.Add(offer);
 
             return RedirectToAction("Index");
@@ -107,12 +111,14 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
         }
 
-
         [HttpGet]
          public async Task<IActionResult> Delete(int id)
         {
             var offerDetails = await _offerService.GetByIdAsync(id);
-            if (offerDetails == null) return View("Error");
+            if (offerDetails == null)
+            {
+                return View("Error");
+            }
             return View(offerDetails);
         }
 
@@ -120,13 +126,12 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> DeleteOffer(int id)
         {
             var offerDetails = await _offerService.GetByIdAsync(id);
-            
-            if (offerDetails == null) return View("Error");
-
+            if (offerDetails == null)
+            {
+                return View("Error");
+            }
             _offerService.Delete(offerDetails);
             return RedirectToAction("Index");
-
         }
     }
-
 }
