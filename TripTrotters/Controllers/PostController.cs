@@ -18,24 +18,22 @@ namespace TripTrotters.Controllers
     public class PostController : Controller
     {
         private readonly IPostService _postService;
-        private readonly IApartmentService _apartmentService;
         private readonly ICommentService _commentService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICloudinaryImageService _cloudinaryImageService;
         private readonly IImageService _imageService;
         private readonly IUserPostLikeService _userPostLikeService;
 
-        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService)
-
+        public PostController(IPostService postService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService)
         {
             _postService = postService;
-            _apartmentService = apartmentService;
             _commentService = commentService;
             _httpContextAccessor = httpContextAccessor;
             _cloudinaryImageService = cloudinaryImageService;
             _imageService = imageService;
             _userPostLikeService = userPostLikeService;
         }
+
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = await _postService.GetAll();
@@ -43,9 +41,7 @@ namespace TripTrotters.Controllers
             {
                 post.Comments = _commentService.GetAllByPostId(post.Id).ToList();
             }
-
             return View(posts);
-
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -54,12 +50,19 @@ namespace TripTrotters.Controllers
             return View(post);
         }
 
-
         public IActionResult Create()
         {
-            var currentUI = _httpContextAccessor.HttpContext.User.GetUserId();
-            var postViewModel = new CreatePostViewModel { UserId = int.Parse(currentUI) };
-            return View(postViewModel);
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
+                var postViewModel = new CreatePostViewModel { UserId = int.Parse(curUserId) };
+                return View(postViewModel);
+            }
         }
 
         [HttpPost]
@@ -96,7 +99,6 @@ namespace TripTrotters.Controllers
             {
                 ModelState.AddModelError("", "Photo upload failed");
             }
-
             return View(createViewModel);
         }
 
@@ -114,8 +116,6 @@ namespace TripTrotters.Controllers
                 Description = post.Description,
                 ApartmentId = post.ApartmentId,
             };
-
-
             return View(postViewModel);
         }
 
@@ -126,11 +126,12 @@ namespace TripTrotters.Controllers
             {
                 ModelState.AddModelError("", "Failed to edit post");
                 return View("Edit", editPostViewModel);
-
             }
             Post post = await _postService.GetByIdAsync(editPostViewModel.Id);
             if (post == null)
+            {
                 return View("Error");
+            }
             post.Title = editPostViewModel.Title;
             post.Description = editPostViewModel.Description;
 
@@ -142,14 +143,13 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> UpdateLike(int id, EditPostViewModel editPostViewModel)
         {
             Post post = await _postService.GetByIdAsync(editPostViewModel.Id);
-            var currentUId = int.Parse(_httpContextAccessor.HttpContext.User.GetUserId());
-
-            bool likedByUser = _userPostLikeService.PostLikedByUser(currentUId, post.Id);
+            var curUserId = int.Parse(_httpContextAccessor.HttpContext.User.GetUserId());
+            bool likedByUser = _userPostLikeService.PostLikedByUser(curUserId, post.Id);
 
             if (likedByUser)
             {
                 post.Likes--;
-                var userLike = _userPostLikeService.GetByUserAndPostId(currentUId, post.Id);
+                var userLike = _userPostLikeService.GetByUserAndPostId(curUserId, post.Id);
                 _userPostLikeService.Delete(userLike);
             }
             else
@@ -157,12 +157,11 @@ namespace TripTrotters.Controllers
                 post.Likes++;
                 var newLike = new UserPostLike
                 {
-                    UserId = currentUId,
+                    UserId = curUserId,
                     PostId = post.Id,
                 };
                 _userPostLikeService.Add(newLike);
             }
-
             _postService.Update(post);
 
             return RedirectToAction("Index", "Post");
@@ -171,7 +170,10 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var postDetails = await _postService.GetByIdAsync(id);
-            if (postDetails == null) return View("Error");
+            if (postDetails == null)
+            {
+                return View("Error");
+            }
             return View(postDetails);
         }
 
@@ -179,11 +181,12 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> DeletePost(int id)
         {
             var postDetails = await _postService.GetByIdAsync(id);
-            if (postDetails == null) return View("Error");
-
+            if (postDetails == null)
+            {
+                return View("Error");
+            }
             _postService.Delete(postDetails);
             return RedirectToAction("Index");
-
         }
     }
 }

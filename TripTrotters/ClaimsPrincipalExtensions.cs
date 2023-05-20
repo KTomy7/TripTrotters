@@ -8,4 +8,9 @@ public static class ClaimsPrincipalExtensions
     {
         return user.FindFirst(ClaimTypes.NameIdentifier)!.Value;
     }
+
+    public static bool IsLoggedIn(this ClaimsPrincipal user)
+    {
+        return user.Identity!.IsAuthenticated;
+    }
 }
