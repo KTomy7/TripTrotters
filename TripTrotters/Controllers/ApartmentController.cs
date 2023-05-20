@@ -25,6 +25,7 @@ namespace TripTrotters.Controllers
             _imageService = imageService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index() 
 
         { 
@@ -32,12 +33,14 @@ namespace TripTrotters.Controllers
             return View(apartments);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             Apartment apartment  = await _apartmentService.GetByIdAsync(id);
             return View(apartment);
         }
 
+        [HttpGet]
         [Authorize(Roles = "Owner")]
         public IActionResult Create()
         {
@@ -101,6 +104,7 @@ namespace TripTrotters.Controllers
             return View(apartmentVM);
         }
 
+        [HttpGet]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -126,7 +130,6 @@ namespace TripTrotters.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Owner")]
-
         public async Task<IActionResult> Edit(int id, EditApartmentViewModel apartmentVM)
         {
             if (!ModelState.IsValid)
@@ -164,6 +167,7 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Delete(int id)
         {
