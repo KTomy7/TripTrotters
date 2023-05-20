@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
@@ -27,7 +28,7 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> Index() 
 
         { 
-            IEnumerable<Apartment> apartments =  await _apartmentService.GetAll();
+            IEnumerable<Apartment> apartments = await _apartmentService.GetAll();
             return View(apartments);
         }
 
@@ -37,6 +38,7 @@ namespace TripTrotters.Controllers
             return View(apartment);
         }
 
+        [Authorize(Roles = "Owner")]
         public IActionResult Create()
         {
             if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
@@ -53,6 +55,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Create(CreateApartmentViewModel apartmentVM)
         { 
             if(ModelState.IsValid)
@@ -98,6 +101,7 @@ namespace TripTrotters.Controllers
             return View(apartmentVM);
         }
 
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Edit(int id)
         {
             Apartment apartment = await _apartmentService.GetByIdAsync(id);
@@ -121,6 +125,8 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Owner")]
+
         public async Task<IActionResult> Edit(int id, EditApartmentViewModel apartmentVM)
         {
             if (!ModelState.IsValid)
@@ -158,6 +164,7 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Delete(int id)
         {
             var apartmentDetails = await _apartmentService.GetByIdAsync(id);
@@ -168,6 +175,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> DeleteApartment(int id)
         {
             var apartmentDetails = await _apartmentService.GetByIdAsync(id);
