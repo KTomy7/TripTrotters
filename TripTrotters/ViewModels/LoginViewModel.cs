@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TripTrotters.ViewModels;
-
-public class LoginViewModel
+namespace TripTrotters.ViewModels
 {
-    [Display(Name = "Email Address")]
-    [Required(ErrorMessage = "Email address is required!")]
-    public string EmailAddress { get; set; }
-    [Required]
-    [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public class LoginViewModel
+    {
+        [Display(Name = "Email Address")]
+        [Required(ErrorMessage = "Email address is required!")]
+        public string EmailAddress { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
 }

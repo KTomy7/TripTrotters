@@ -12,7 +12,5 @@ namespace TripTrotters.Services.Abstractions
         bool Update(Apartment ap);
         bool Delete(Apartment ap);
         bool Save();
-
-
     }
 }

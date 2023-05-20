@@ -11,9 +11,9 @@ namespace TripTrotters.DataAccess
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
-//
+        //
         //    optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=TripTrotters;User ID=sa; Password = sA-12345; TrustServerCertificate=True");
-//
+        //
         //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -109,7 +109,6 @@ namespace TripTrotters.DataAccess
                 .WithMany(ucl => ucl.UsersLikes)
                 .HasForeignKey(ucl => ucl.CommentId)
                 .OnDelete(DeleteBehavior.NoAction);
-
         }
 
         public DbSet<Post> Posts { get; set; }
