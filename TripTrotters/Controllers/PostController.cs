@@ -150,6 +150,7 @@ namespace TripTrotters.Controllers
             {
                 Title = post.Title,
                 Description = post.Description,
+                Budget = post.Budget,
                 ApartmentId = post.ApartmentId,
             };
             return View(postViewModel);
