@@ -24,25 +24,54 @@ namespace TripTrotters.Controllers
         private readonly ICloudinaryImageService _cloudinaryImageService;
         private readonly IImageService _imageService;
         private readonly IUserPostLikeService _userPostLikeService;
+        private readonly IUserCommentLikeService _userCommentLikeService;
 
-        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService)
+
+        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService, IUserCommentLikeService userCommentLikeService)
 
         {
             _postService = postService;
             _apartmentService = apartmentService;
             _commentService = commentService;
             _httpContextAccessor = httpContextAccessor;
-            _cloudinaryImageService = cloudinaryImageService;   
-            _imageService = imageService; 
+            _cloudinaryImageService = cloudinaryImageService;
+            _imageService = imageService;
             _userPostLikeService = userPostLikeService;
+            _userCommentLikeService = userCommentLikeService;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             IEnumerable<Post> posts = await _postService.GetAll();
             foreach (Post post in posts)
             {
-                post.Comments =  _commentService.GetAllByPostId(post.Id).ToList();
+                post.Comments = _commentService.GetAllByPostId(post.Id).ToList();
             }
+
+            posts = posts.OrderByDescending(post => post.Date);
+
+            return View(posts);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(string userName)
+        {
+            IEnumerable<Post> posts;
+            
+            posts = await _postService.GetAllbyUser(userName);
+
+            if(!posts.Any())
+            {
+                posts = await _postService.GetAll();
+            }
+            
+            foreach (Post post in posts)
+            {
+                post.Comments = _commentService.GetAllByPostId(post.Id).ToList();
+            }
+
+            posts = posts.OrderByDescending(post => post.Date);
 
             return View(posts);
 
@@ -138,6 +167,7 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
         }
 
+
         [HttpPost]
         public async Task<IActionResult> UpdateLike(int id, EditPostViewModel editPostViewModel)
         {
@@ -181,9 +211,9 @@ namespace TripTrotters.Controllers
             var postDetails = await _postService.GetByIdAsync(id);
             if (postDetails == null) return View("Error");
 
+
             _postService.Delete(postDetails);
             return RedirectToAction("Index");
-
         }
     }
 }

@@ -31,7 +31,8 @@ namespace TripTrotters.DataAccess
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.Post)
-                .HasForeignKey(c => c.PostId);
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Apartment>()
                 .HasMany(a => a.Offers)
@@ -77,7 +78,8 @@ namespace TripTrotters.DataAccess
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.Images)
                 .WithOne(i => i.Post)
-                .HasForeignKey(i => i.PostId);
+                .HasForeignKey(i => i.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
                 
             modelBuilder.Entity<UserPostLike>()
                 .HasKey(upl => new { upl.UserId, upl.PostId });
@@ -92,7 +94,7 @@ namespace TripTrotters.DataAccess
                 .HasOne(upl => upl.Post)
                 .WithMany(upl => upl.UsersLikes)
                 .HasForeignKey(upl => upl.PostId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserCommentLike>()
                 .HasKey(ucl => new { ucl.UserId, ucl.CommentId });
@@ -107,7 +109,7 @@ namespace TripTrotters.DataAccess
                 .HasOne(ucl => ucl.Comment)
                 .WithMany(ucl => ucl.UsersLikes)
                 .HasForeignKey(ucl => ucl.CommentId)
-                .OnDelete (DeleteBehavior.NoAction);
+                .OnDelete (DeleteBehavior.Cascade);
     
         }
 

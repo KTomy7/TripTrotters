@@ -22,6 +22,7 @@ namespace TripTrotters.Services
 
         public bool Delete(Post p)
         {
+           
             _context.Posts.Remove(p);
             return Save();
         }
@@ -31,9 +32,9 @@ namespace TripTrotters.Services
             return await _context.Posts.Include(a => a.Apartment).Include(u =>u.User).ToListAsync();
         }
 
-        public async Task<IEnumerable<Post>> GetAllbyUser(int UserId)
+        public async Task<IEnumerable<Post>> GetAllbyUser(string UserName)
         {
-            return await _context.Posts.Include(a => a.Apartment).Include(u => u.User).Where(p => p.UserId == UserId).ToListAsync();
+            return await _context.Posts.Include(a => a.Apartment).Include(u => u.User).Where(p => p.User.UserName == UserName).ToListAsync();
         }
 
         public async Task<Post> GetByIdAsync(int id)

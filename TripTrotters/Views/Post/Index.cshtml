@@ -1,3 +1,4 @@
+@using TripTrotters.Services.Abstractions;
 @using TripTrotters.ViewModels;
 
 @model IEnumerable<Post>
@@ -6,9 +7,12 @@
     int commNo = 1;
     int commIteration = 1;
 }
+@inject IImageService _imageService;
+
 <script>
    $(document).ready(function (){
         //Set comments toggle for each post
+
         @for(int i = 1; i <= Model.Count(); i++)
         {
             string commentBtnId = $"#commentBtn{i}";
@@ -29,61 +33,94 @@
 
         @foreach(Post post in Model)
         {
-        int totalComments = post.Comments.Count + commIteration;
-        while (commIteration <= totalComments)
+            int totalComments = post.Comments.Count + commIteration;
+            while (commIteration <= totalComments)
             {
-            string commentTextId = $"#commentsText{commIteration}";
-            string commentEditId = $"#commentEdit{commIteration}";
-            string commentEditBtnId = $"#commentEditBtn{commIteration}";
+                string commentTextId = $"#commentsText{commIteration}";
+                string commentEditId = $"#commentEdit{commIteration}";
+                string commentEditBtnId = $"#commentEditBtn{commIteration}";
 
-                <text>
-                    $(document).on('click', '@commentEditBtnId', function () {
-                        $('@commentTextId').toggle();
-                    });
+                    <text>
+                        $(document).on('click', '@commentEditBtnId', function () {
+                            $('@commentTextId').toggle();
+                        });
 
-                    $(document).on('click', '@commentEditBtnId', function () {
-                        $('@commentEditId').toggle();
-                    });
-                </text>
-            commIteration++;
+                        $(document).on('click', '@commentEditBtnId', function () {
+                            $('@commentEditId').toggle();
+                        });
+
+                    </text>
+                commIteration++;
             }   
-    }
+        }
     });
 
 </script>
 
 
-<div class="feed">
 
+
+<div class="container">
+    <div class="d-flex align-items-center justify-content-center flex-column">
+        <form method="post" asp-action="Index" class="d-flex">
+            <input type="hidden" name="searchString" value="userNames" />
+            <input class="form-control me-1 p-2" type="search" name="userName" placeholder="Search user" aria-label="Search" style="width: 300px">
+            <button class="btn btn-success p-2" style="background-color: #2ec42e; border:none" type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+    </div>
+    <div class="feed">
     @foreach(var item in Model)
     {
-
-        <div class="container">
             <div class="post-body">
                 <div class="user-info">
                     <div class="user">
                         <img src="@item.User.ImageUrl" class="user-pro-pic">
                         <h2>@item.User.UserName</h2>
                     </div>
+                    @if (item.UserId == int.Parse(User.GetUserId()))
+                    {
+                        {ViewData["Id"] = item.Id;} 
+                        @Html.Partial("Delete.cshtml", new Post{Id = (int)ViewData["Id"]})
+                    }
+
                 </div>
                 <div class="date-time">
                     @item.Date
+                </div>
+                <div class="postTitle">
+                    @item.Title - @item.Budget RON/night
                 </div>
                 <div class="description">
                     @item.Description
                 </div>
                 <div class="post-detail">
                     <div id="@string.Format("Carousel{0}",postNo)" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="@string.Format("#Carousel{0}",postNo)" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                            <button type="button" data-bs-target="@string.Format("#Carousel{0}",postNo)" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                            <button type="button" data-bs-target="@string.Format("#Carousel{0}",postNo)" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                        </div>
+                        @{
+                            var postImages = await _imageService.GetAllImagesByPostId(item.Id);
+                            int imgNo = 1;
+                        }
+
                         <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="" class="d-block w-100" alt="...">
-                            </div>
+                            @foreach (var image in postImages)
+                            {
+                                @if(imgNo == 1)
+                                {
+                                    <div class="carousel-item active">
+                                        <img src="@image.ImageUrl" class="d-block w-100" alt="...">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item">
+                                        <img src="@image.ImageUrl" class="d-block w-100" alt="...">
+                                    </div>
+                                 }
+                                imgNo++;
+                             }
                         </div>
+                            
                         <button class="carousel-control-prev" type="button" data-bs-target="@string.Format("#Carousel{0}",postNo)" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
@@ -182,14 +219,8 @@
                     </div>
                 </div>
             </div>
-         </div>
             postNo++;
     }
+    </div>
+
  </div>
-
-
-
-
-
-
-
