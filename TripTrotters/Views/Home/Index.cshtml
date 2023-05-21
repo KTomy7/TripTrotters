@@ -1,9 +1,90 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="homepage-imagine">
+    <img src="~/images/newNewAbc.jpg" alt="background image" />
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <!-- <div class="text-and-icons"> -->
+    <!-- text -->
+    <div class="masthead">
+        <div class="masthead-content text-white">
+            <h1 class="fst-italic lh-1 mb-4">TripTrotters</h1>
+            <p class="mb-5">Welcome to TripTrotters, your ultimate destination for all your travel needs! Whether you're a seasoned globetrotter or a first-time adventurer, Triptrotters is here to provide you with exceptional travel experiences tailored to your preferences.</p>
+            <input class="btn-scroll-down" id="scroll-down" type="button" value="Get to know us" onClick="document.getElementById('about').scrollIntoView({ behavior: 'smooth', block: 'center' });" />
+        </div>
+    </div>
+
+    <!-- social icons -->
+    <div class="social-icons">
+        <div class="d-flex flex-row flex-lg-column justify-content-center align-items-center h-200 mt-3 mt-xxl-0">
+            <a class="btn btn-dark btn-xxl rounded-circle m-3" href="/Apartment/Index" role="button">
+
+
+                <i class="fa-solid fa-building-user"></i>
+            </a>
+            <a class="btn btn-dark btn-xxl rounded-circle m-3" href="/Post/Index" role="button">
+                <i class="fa-solid fa-newspaper"></i>
+            </a>
+            <a class="btn btn-dark btn-xxl rounded-circle m-3" href="/Offer/Index" role="button">
+                <i class="fa-solid fa-money-bill"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- </div> -->
 </div>
 
+<div>
+    <img src="~/images/abc-extension.png" alt="background image" />
+</div>
+
+<div id="about" class="about">
+
+    <img src="~/images/solid-color-image.jpeg" alt="background image" />
+
+    <div class="container">
+        <h1 style="text-align: center;">Meet the team!</h1>
+        <div class="row">
+            <div class="col-lg-4">
+                <img class="bd-placeholder-img rounded-circle" width="140" height="140" src="~/images/tomy.jpg" alt="Profile Picture">
+                <h2>Kiss Tamas Norbert</h2>
+                <p></p>
+                <p>TripTrotters - Team Leader</p>
+                <p><a class="btn btn-secondary" href="https://github.com/KTomy7" target="_blank" role="button">View details &raquo;</a></p>
+
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <img class="bd-placeholder-img rounded-circle" width="140" height="140" src="~/images/oana.jpg" alt="Profile Picture">
+                <h2>Laza Oana-Ștefania</h2>
+                <p>TripTrotters - Software Developer</p>
+                <p>Listens to an awful lot of music.</p>
+                <p><a class="btn btn-secondary" href="https://github.com/oanalazas" target="_blank" role="button">View details &raquo;</a></p>
+
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <img class="bd-placeholder-img rounded-circle" width="140" height="140" src="~/images/maia.jpg" alt="Profile Picture">
+                <h2>Incer Maia</h2>
+                <p>TripTrotters - Software Developer</p>
+                <p>When I'm not busy saving the virtual world, you can find me tinkering away in my secret developer lair.</p>
+
+                <p><a class="btn btn-secondary btn-black" href="https://mayaaaai.github.io/" target="_blank" role="button">View details &raquo;</a></p>
+            </div><!-- /.col-lg-4 -->
+
+
+            <div class="container2">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <img class="bd-placeholder-img rounded-circle" width="140" height="140" src="~/images/ielciu.png" alt="Profile Picture">
+                        <h2>Ielciu Cristian-Alexandru</h2>
+                        <p></p>
+                        <p>TripTrotters - Database Designer</p>
+                        <p><a class="btn btn-secondary" href="https://github.com/ICristian04" target="_blank" role="button">View details &raquo;</a></p>
+                    </div><!-- /.col-lg-4 -->
+                    <div class="col-lg-4">
+                        <img class="bd-placeholder-img rounded-circle" width="140" height="140" src="~/images/ciubuc.jpg" alt="Profile Picture">                <h2>Ciubuc Rareș-Ovidiu</h2>
+                        <p>TripTrotters - Software Tester</p>
+                        <p></p>
+                        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+                    </div><!-- /.col-lg-4 -->
+                </div><!-- /.row -->
+            </div><!-- /.container -->
+        </div>
+    </div><!-- /#about -->

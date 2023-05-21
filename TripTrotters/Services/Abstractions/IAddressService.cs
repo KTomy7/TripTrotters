@@ -7,9 +7,9 @@ namespace TripTrotters.Services.Abstractions
         Task<IEnumerable<Address>> GetAll();
         Task<Address> GetByIdAsync(int id);
 
-        bool Add(Address offer);
-        bool Update(Address offer);
-        bool Delete(Address offer);
+        bool Add(Address address);
+        bool Update(Address address);
+        bool Delete(Address address);
         bool Save();
     }
 }

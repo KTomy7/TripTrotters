@@ -7,9 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Controllers\Apartment\**" />
 	  <Compile Remove="Interfaces\**" />
+	  <Content Remove="Controllers\Apartment\**" />
 	  <Content Remove="Interfaces\**" />
+	  <EmbeddedResource Remove="Controllers\Apartment\**" />
 	  <EmbeddedResource Remove="Interfaces\**" />
+	  <None Remove="Controllers\Apartment\**" />
 	  <None Remove="Interfaces\**" />
 	</ItemGroup>
 
@@ -26,10 +30,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\Apartment\" />
   </ItemGroup>
 
 </Project>

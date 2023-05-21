@@ -40,6 +40,12 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Traveller", options => options.RequireRole("Traveller"));
+    options.AddPolicy("Owner", options => options.RequireRole("Owner"));
+    options.AddPolicy("Admin", options => options.RequireRole("Admin"));
+});
 
 var app = builder.Build();
 

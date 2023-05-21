@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
@@ -9,7 +10,6 @@ namespace TripTrotters.Controllers
 {
     public class OfferController : Controller
     {
-
         private readonly IOfferService _offerService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -18,33 +18,46 @@ namespace TripTrotters.Controllers
             _offerService = offerService;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             IEnumerable<Offer> offers = await _offerService.GetAll();
             return View(offers);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             Offer offer = await _offerService.GetByIdAsync(id);
             return View(offer);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Agent")]
         public IActionResult Create()
         {
-            var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
-            var offerViewModel = new OfferViewModel { AgentId = int.Parse(curUserId) };
-            return View(offerViewModel);
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
+                var offerViewModel = new OfferViewModel { AgentId = int.Parse(curUserId) };
+                return View(offerViewModel);
+            }
         }
 
         [HttpPost]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> Create(OfferViewModel offerViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return View(offerViewModel);
             }
-
             Offer offer = new Offer
             {
                 Title = offerViewModel.Title,
@@ -53,15 +66,14 @@ namespace TripTrotters.Controllers
                 EndDate = offerViewModel.EndDate,
                 AgentId = offerViewModel.AgentId,
                 ApartmentId = offerViewModel.ApartmentId,
-
             };
-
             _offerService.Add(offer);
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> Edit(int id)
         {
             Offer offer = await _offerService.GetByIdAsync(id);
@@ -71,7 +83,7 @@ namespace TripTrotters.Controllers
             }
             var offerViewModel = new OfferViewModel
             {
-                /*Title = offer.Title,*/
+                Title = offer.Title,
                 Description = offer.Description,
                 StartDate = offer.StartDate,
                 EndDate = offer.EndDate,
@@ -83,6 +95,7 @@ namespace TripTrotters.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> Edit(int id, OfferViewModel offerViewModel)
         {
             if (!ModelState.IsValid)
@@ -107,26 +120,29 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
         }
 
-
         [HttpGet]
-         public async Task<IActionResult> Delete(int id)
+        [Authorize(Roles = "Agent")]
+        public async Task<IActionResult> Delete(int id)
         {
             var offerDetails = await _offerService.GetByIdAsync(id);
-            if (offerDetails == null) return View("Error");
+            if (offerDetails == null)
+            {
+                return View("Error");
+            }
             return View(offerDetails);
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> DeleteOffer(int id)
         {
             var offerDetails = await _offerService.GetByIdAsync(id);
-            
-            if (offerDetails == null) return View("Error");
-
+            if (offerDetails == null)
+            {
+                return View("Error");
+            }
             _offerService.Delete(offerDetails);
             return RedirectToAction("Index");
-
         }
     }
-
 }

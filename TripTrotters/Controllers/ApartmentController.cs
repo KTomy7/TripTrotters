@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
@@ -24,28 +25,40 @@ namespace TripTrotters.Controllers
             _imageService = imageService;
         }
 
-      
+        [HttpGet]
         public async Task<IActionResult> Index() 
 
-        { IEnumerable<Apartment> apartments =  await _apartmentService.GetAll();
+        { 
+            IEnumerable<Apartment> apartments = await _apartmentService.GetAll();
             return View(apartments);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             Apartment apartment  = await _apartmentService.GetByIdAsync(id);
             return View(apartment);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Owner")]
         public IActionResult Create()
         {
-            var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
-            var apartmentViewModel = new CreateApartmentViewModel { OwnerId = int.Parse(curUserId) };
-            return View(apartmentViewModel);
-
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                var curUserId = _httpContextAccessor.HttpContext.User.GetUserId();
+                var apartmentViewModel = new CreateApartmentViewModel { OwnerId = int.Parse(curUserId) };
+                return View(apartmentViewModel);
+            }
         }
 
         [HttpPost]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Create(CreateApartmentViewModel apartmentVM)
         { 
             if(ModelState.IsValid)
@@ -91,11 +104,15 @@ namespace TripTrotters.Controllers
             return View(apartmentVM);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Edit(int id)
         {
             Apartment apartment = await _apartmentService.GetByIdAsync(id);
             if (apartment == null)
-             return View("Error");
+            {
+                return View("Error");
+            }
             var apartmentVM = new EditApartmentViewModel
             {
                 Title = apartment.Title,
@@ -108,18 +125,17 @@ namespace TripTrotters.Controllers
                 StreetNumber = apartment.Address.StreetNumber
             };
 
-
             return View(apartmentVM);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Edit(int id, EditApartmentViewModel apartmentVM)
         {
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Failed to edit apartment");
                 return View("Edit", apartmentVM);
-
                 
                 var userApartment = await _apartmentService.GetByIdAsync(id);
                // if(userApartment != null)
@@ -137,7 +153,9 @@ namespace TripTrotters.Controllers
             }
             Apartment apartment = await _apartmentService.GetByIdAsync(apartmentVM.Id);
             if (apartment == null)
+            {
                 return View("Error");
+            }
             apartment.Title = apartmentVM.Title;
             apartment.Description = apartmentVM.Description;
             apartment.Price = apartmentVM.Price;
@@ -149,23 +167,28 @@ namespace TripTrotters.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Delete(int id)
         {
             var apartmentDetails = await _apartmentService.GetByIdAsync(id);
-            if (apartmentDetails == null) return View("Error");
+            if (apartmentDetails == null) {
+                return View("Error");
+            }
             return View(apartmentDetails); 
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> DeleteApartment(int id)
         {
             var apartmentDetails = await _apartmentService.GetByIdAsync(id);
-            if (apartmentDetails == null) return View("Error");
-
+            if (apartmentDetails == null)
+            {
+                return View("Error");
+            }
             _apartmentService.Delete(apartmentDetails);
             return RedirectToAction("Index");
-
         }
     } 
-
 }
