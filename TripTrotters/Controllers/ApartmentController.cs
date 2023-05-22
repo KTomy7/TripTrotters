@@ -33,8 +33,13 @@ namespace TripTrotters.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index() 
-
-        { IEnumerable<Apartment> apartments =  await _apartmentService.GetAll();
+        {
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
+            IEnumerable<Apartment> apartments = await _apartmentService.GetAll();
             foreach (Apartment apartment in apartments)
             {
                 var reviews = await _reviewService.GetAllByApartmentId(apartment.Id);

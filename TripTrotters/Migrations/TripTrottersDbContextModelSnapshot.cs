@@ -580,7 +580,7 @@ namespace TripTrotters.Migrations
                     b.HasOne("TripTrotters.Models.Apartment", "Apartment")
                         .WithMany("Images")
                         .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("TripTrotters.Models.Post", "Post")
                         .WithMany("Images")
