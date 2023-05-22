@@ -181,17 +181,21 @@ namespace TripTrotters.Controllers
             post.Budget = editPostViewModel.Budget;
             _postService.Update(post);
 
-            foreach (var item in editPostViewModel.NewImages)
+            if (editPostViewModel.NewImages != null)
             {
-                var result = await _cloudinaryImageService.AddPhotoAsync(item);
-                Image image = new Image
+                foreach (var item in editPostViewModel.NewImages)
                 {
-                    ImageUrl = result.Url.ToString(),
-                    PostId = post.Id
-                };
-                _imageService.Add(image);
+                    var result = await _cloudinaryImageService.AddPhotoAsync(item);
+                    Image image = new Image
+                    {
+                        ImageUrl = result.Url.ToString(),
+                        PostId = post.Id
+                    };
+                    _imageService.Add(image);
+                }
             }
-            if (editPostViewModel.ImagesToDelete.Count > 0)
+            
+            if (editPostViewModel.ImagesToDelete != null)
             {
                 foreach (var imageUrl in editPostViewModel.ImagesToDelete)
                 {
@@ -202,6 +206,7 @@ namespace TripTrotters.Controllers
                     catch (Exception ex)
                     {
                         ModelState.AddModelError("", "Couldn't delete photo!");
+                        return View("Edit", editPostViewModel);
                     }
                     var image = await _imageService.GetImageByUrl(imageUrl);
                     _imageService.Delete(image);
