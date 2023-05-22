@@ -22,7 +22,8 @@
             string commentAddId = $"#commentAdd{i}";
             string commentsListId = $"#commentsList{i}";
             string noOfCommentsBtnId = $"#noOfCommentsBtn{i}";
-    
+            string carouselId = $"#Carousel{i}";
+
             <text>
                     $(document).on('click', '@commentBtnId', function () {
                         $('@commentAddId').toggle();
@@ -38,6 +39,9 @@
 
                     $(document).on('click', '@postEditBtnId', function () {
                         $('@postEditInfoId').toggle();
+                    });
+                    $(document).on('click', '@postEditBtnId', function () {
+                        $('@carouselId').toggle();
                     });
             </text>
         }
@@ -85,6 +89,7 @@
     <div class="feed">
     @foreach(var item in Model)
     {
+
             <div class="post-body">
                 <div class="user-info">
                     <div class="user">
@@ -117,14 +122,22 @@
                     </div>
                 </div>
                 <div id="@string.Format("postEditInfo{0}", postNo)" style="display:none; margin-bottom:10px">
-                    @Html.Partial("Edit.cshtml", new EditPostViewModel{ Id = item.Id, Budget = item.Budget, Title = item.Title, Description = item.Description, Likes = item.Likes, Date = item.Date, Comments = item.Comments, ApartmentId = item.ApartmentId, UserId = item.UserId})
+                    @{
+                        var Images = await _imageService.GetAllImagesByPostId(item.Id);
+                        List<string> ImageURLS = new List<string>();
+                        foreach(var postImage in Images)
+                        {
+                            ImageURLS.Add(postImage.ImageUrl);
+                        }
+                    }
+                    @Html.Partial("Edit.cshtml", new EditPostViewModel{ Id = item.Id, Budget = item.Budget, Title = item.Title, Description = item.Description, Likes = item.Likes, Date = item.Date, Comments = item.Comments, ApartmentId = item.ApartmentId, UserId = item.UserId, ImageUrls = ImageURLS})
                 </div>
                 <div class="post-detail">
                     <div id="@string.Format("Carousel{0}",postNo)" class="carousel slide" data-bs-ride="carousel">
-                        @{
+                    @{
                             var postImages = await _imageService.GetAllImagesByPostId(item.Id);
                             int imgNo = 1;
-                        }
+                     }
 
                         <div class="carousel-inner">
                             @foreach (var image in postImages)
