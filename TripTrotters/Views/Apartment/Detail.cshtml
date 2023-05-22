@@ -1,106 +1,149 @@
-﻿@model Apartment
+﻿@using TripTrotters.Services.Abstractions;
+@using TripTrotters.ViewModels;
+@model Apartment
+@inject IReviewService _reviewService;
+@inject IImageService _imageService;
 
-<div class="main-container">
-    <nav aria-label="breadcrumb" role="navigation" class="bg-primary text-white">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="index.html">Home</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="pages-app.html">Find</a>
-                        </li>
+@{
+    ViewData["Title"] = "Apartment Details";
+    var reviews = _reviewService.GetAllByApartmentId(Model.Id).Result;
+    int reviewNo = 1;
+}
 
-                        <li class="breadcrumb-item active" aria-current="page">Runnings Clubs in @Model.Address.City, @Model.Address.City</li>
-                    </ol>
-                </div>
-                <!--end of col-->
-            </div>
-            <!--end of row-->
-        </div>
-        <!--end of container-->
-    </nav>
-    <section class="bg-white space-sm">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 d-flex flex-column justify-content-between mr-auto ml-auto">
-                    <div>
-                        <h1 class="mb-2">@Model.Title</h1>
-                        <h2 class="lead mb-3">@Model.Address.City, @Model.Address.Street</h2>
-                        <div>
-                            <span class="badge badge-secondary mr-3">@Model.Price</span>
+<script>
+    $(document).ready(function () {
+        // Set comments toggle for each post
+    @for (int i = 1; i <= Model.Reviews.Count(); i++)
+    {
+        string reviewEditBtnId = $"#reviewEditBtn{i}";
+        string reviewEditId = $"#reviewEdit{i}";
+
+        <text>
+                $(document).on('click', '@reviewEditBtnId', function () {
+                    $('@reviewEditId').toggle();
+                });
+        </text>
+    }
+        });
+</script>
+
+<h1>@Model.Title</h1>
+
+<div>
+    <h4>Price: @Model.Price</h4>
+    <h4>Address: @Model.Address.City, @Model.Address.Street</h4>
+    <h4>Description:</h4>
+    <p>@Model.Description</p>
+</div>
+
+@if (Model.Reviews != null && Model.Reviews.Count > 0)
+{
+    <h2>Reviews:</h2>
+    <div class="row">
+        <div class="col-md-10">
+        @foreach (var review in reviews)
+        {
+                <div class="card mb-4 box-shadow">
+                    <div class="card-body">
+                        <h5 class="card-text">@review.Description</h5>
+                        <p class="card-text">Rating: @review.Rating</p>
+                        <p class="card-text">Date: @review.Date</p>
+                        <p class="card-text">Author: @review.User.UserName</p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="comment-button">
+                                <button id="@string.Format("reviewEditBtn{0}", reviewNo)" type="button" class="btn btn-light">
+                                    <span class="far fa-comment"></span>
+                                    <i>Edit your review</i>
+                                </button>
+                            </div>
+                            <div>
+                                <a type="button" class="btn btn-sm btn-outline-info" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id">Delete</a>
+                            </div>
                         </div>
-                        <div>
-                            <ul class="list-inline text-small d-inline-block mb-3">
-                                <li class="list-inline-item"><i class="icon-thumbs-up"></i> 214</li>
-                                <li class="list-inline-item"><i class="icon-message"></i> 6</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="btn-group mb-2">
-                            <button type="button" class="btn btn-success btn-lg">Join Club</button>
-                            <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split dropdown-toggle-no-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-dots-three-horizontal"></i>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-sm">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Separated link</a>
+
+                        <div id="@string.Format("reviewEdit{0}", reviewNo)" style="display:none">
+                            <div class="comment-form">
+                                
+                                @Html.Partial("~/Views/Review/Edit.cshtml", new  ReviewViewModel{ Id = review.Id, ApartmentId = review.ApartmentId,   UserId = review.UserId})
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--end of col-->
-            </div>
-            <!--end of row-->
+           
+            reviewNo++;
+        }
         </div>
-        <!--end of container-->
-    </section>
-    <!--end of section-->
-    <section class="space-sm">
-        <div class="container">
-            <div class="row justify-content-between">
-                <div class="col-12 col-md-8 col-lg-7">
-                    <h5 class="mb-4">Overview</h5>
-                    <article>
-                        @Model.Description
-                    </article>
-                    <hr>
-                    <h5 class="mb-4">Discussion</h5>
-                    <div class="card">
-                        <div class="card-header bg-secondary d-flex justify-content-between">
-                            <button class="btn btn-secondary" type="button" data-target="#comment-reply" data-toggle="collapse" aria-expanded="false" aria-controls="comment-reply">Post a reply</button>
-                            <form class="d-flex align-items-center">
-                                <span class="mr-2 text-muted text-small text-nowrap">Sort by:</span>
-                                <select class="custom-select">
-                                    <option value="alpha">Alphabetical</option>
-                                    <option value="old-new" selected>Newest</option>
-                                    <option value="new-old">Popular</option>
-                                    <option value="recent">Recently Updated</option>
-                                </select>
-                            </form>
-                        </div>
-                        <div class="collapse" id="comment-reply">
-                            <form class="card-body">
-                                <div class="form-group">
-                                    <textarea class="form-control from-control-lg" id="comment-reply-text" name="comment-reply" rows="4" placeholder="Type your reply here"></textarea>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" name="notify-reply" id="check-notify">
-                                        <label class="custom-control-label text-small" for="check-notify">Notify me when someone replies</label>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <button type="submit" class="btn btn-success mr-3">Submit reply</button>
-                                    <a href="#comment-reply" class="text-small text-muted" data-toggle="collapse" aria-expanded="true" aria-controls="comment-reply">Cancel</a>
-                                </div>
-                            </form>
-                        </div>
-                        <ul class="list-group list-group-flush list-group-comments">
+    </div>
+}
+
+@if (Model.Posts != null && Model.Posts.Count > 0)
+{
+    <h2>Posts:</h2>
+    <ul>
+        @foreach (var post in Model.Posts)
+        {
+            <li>@post.Title: </li>
+        }
+    </ul>
+}
+
+@if (Model.Offers != null && Model.Offers.Count > 0)
+{
+    <h2>Offers:</h2>
+    <ul>
+        @foreach (var offer in Model.Offers)
+        {
+            <li>@offer.Title: </li>
+        }
+    </ul>
+}
+
+
+<div id="@string.Format("Carousel{0}", @Model.Id)" class="carousel slide" data-bs-ride="carousel">
+    @{
+        var postImages = await _imageService.GetAllImagesByApartmentId(@Model.Id);
+        int imgNo = 1;
+    }
+
+    <div class="carousel-inner">
+        @foreach (var image in postImages)
+        {
+            @if (imgNo == 1)
+            {
+                <div class="carousel-item active">
+                    <img src="@image.ImageUrl" class="d-block w-100" alt="...">
+                </div>
+            }
+            else
+            {
+                <div class="carousel-item">
+                    <img src="@image.ImageUrl" class="d-block w-100" alt="...">
+                </div>
+            }
+            imgNo++;
+        }
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="@string.Format("#Carousel{0}",@Model.Id)" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="@string.Format("#Carousel{0}", @Model.Id)" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div>
+    <div class="comment-form">
+        @{
+            ViewData["ApartmentId"] = @Model.Id;
+        }
+        @Html.Partial("~/Views/Review/Create.cshtml", new ReviewViewModel{ ApartmentId = (int)ViewData["ApartmentId"]})
+
+    </div>
+</div>
+
+
+
