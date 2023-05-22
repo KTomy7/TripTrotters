@@ -122,8 +122,14 @@ namespace TripTrotters.Controllers
                 Country = apartment.Address.Country,
                 City = apartment.Address.City,
                 Street = apartment.Address.Street,
-                StreetNumber = apartment.Address.StreetNumber
+                StreetNumber = apartment.Address.StreetNumber,
+                ImageUrls = new List<string>()
             };
+            var images = await _imageService.GetAllImagesByApartmentId(id);
+            foreach (var image in images)
+            {
+                apartmentVM.ImageUrls.Add(image.ImageUrl);
+            }
 
             return View(apartmentVM);
         }
@@ -136,20 +142,6 @@ namespace TripTrotters.Controllers
             {
                 ModelState.AddModelError("", "Failed to edit apartment");
                 return View("Edit", apartmentVM);
-                
-                var userApartment = await _apartmentService.GetByIdAsync(id);
-               // if(userApartment != null)
-                  //  try
-                    {
-                        //await _phtotService.DeletePhotoAsync(userApartment.Image);
-
-                    }
-                  //  catch (Exception ex)
-                    {
-                   //     ModelState.AddModelError("", "Could not delete photo");
-
-                    }
-                   // return View("Error");
             }
             Apartment apartment = await _apartmentService.GetByIdAsync(apartmentVM.Id);
             if (apartment == null)
@@ -164,6 +156,38 @@ namespace TripTrotters.Controllers
             apartment.Address.Street = apartmentVM.Street;
             apartment.Address.StreetNumber = apartmentVM.StreetNumber;
             _apartmentService.Update(apartment);
+
+            if (apartmentVM.NewImages != null)
+            {
+                foreach (var item in apartmentVM.NewImages)
+                {
+                    var result = await _cloudinaryImageService.AddPhotoAsync(item);
+                    Image image = new Image
+                    {
+                        ImageUrl = result.Url.ToString(),
+                        ApartmentId = apartment.Id
+                    };
+                    _imageService.Add(image);
+                }
+            }
+            if (apartmentVM.ImagesToDelete != null)
+            {
+                foreach (var imageUrl in apartmentVM.ImagesToDelete)
+                {
+                    try
+                    {
+                        await _cloudinaryImageService.DeletePhotoAsync(imageUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "Couldn't delete photo!");
+                        return View("Edit", apartmentVM);
+                    }
+                    var image = await _imageService.GetImageByUrl(imageUrl);
+                    _imageService.Delete(image);
+                }
+            }
+
             return RedirectToAction("Index");
         }
 

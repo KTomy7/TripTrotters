@@ -27,7 +27,7 @@ namespace TripTrotters.Controllers
         private readonly IUserCommentLikeService _userCommentLikeService;
 
 
-        public PostController(IPostService postService, IApartmentService apartmentService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService, IUserCommentLikeService userCommentLikeService)
+        public PostController(IPostService postService, ICommentService commentService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IUserPostLikeService userPostLikeService, IUserCommentLikeService userCommentLikeService)
         {
             _postService = postService;
             _commentService = commentService;
@@ -150,9 +150,15 @@ namespace TripTrotters.Controllers
             {
                 Title = post.Title,
                 Description = post.Description,
-                ApartmentId = post.ApartmentId,
                 Budget = post.Budget,
+                ApartmentId = post.ApartmentId,
+                ImageUrls = new List<string>()
             };
+            var images = await _imageService.GetAllImagesByPostId(post.Id);
+            foreach (var image in images)
+            {
+                postViewModel.ImageUrls.Add(image.ImageUrl);
+            }
             return View(postViewModel);
         }
 
@@ -162,7 +168,7 @@ namespace TripTrotters.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Failed to edit post");
+                ModelState.AddModelError("", "Failed to edit post!");
                 return View("Edit", editPostViewModel);
             }
             Post post = await _postService.GetByIdAsync(editPostViewModel.Id);
@@ -173,9 +179,11 @@ namespace TripTrotters.Controllers
             post.Title = editPostViewModel.Title;
             post.Description = editPostViewModel.Description;
             post.Budget = editPostViewModel.Budget;
-            if(editPostViewModel.Images != null)
+            _postService.Update(post);
+
+            if (editPostViewModel.NewImages != null)
             {
-                foreach (var item in editPostViewModel.Images)
+                foreach (var item in editPostViewModel.NewImages)
                 {
                     var result = await _cloudinaryImageService.AddPhotoAsync(item);
                     Image image = new Image
@@ -187,8 +195,24 @@ namespace TripTrotters.Controllers
                 }
             }
             
+            if (editPostViewModel.ImagesToDelete != null)
+            {
+                foreach (var imageUrl in editPostViewModel.ImagesToDelete)
+                {
+                    try
+                    {
+                        await _cloudinaryImageService.DeletePhotoAsync(imageUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "Couldn't delete photo!");
+                        return View("Edit", editPostViewModel);
+                    }
+                    var image = await _imageService.GetImageByUrl(imageUrl);
+                    _imageService.Delete(image);
+                }
+            }
 
-            _postService.Update(post);
             return RedirectToAction("Index");
         }
 
