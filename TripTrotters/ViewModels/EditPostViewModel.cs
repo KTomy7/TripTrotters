@@ -13,5 +13,6 @@ namespace TripTrotters.ViewModels
         public List<Comment>? Comments { get; set; }
         public int ApartmentId { get; set; }
         public int UserId { get; set; }
+        public IEnumerable<IFormFile> Images { get; set; }
     }
 }

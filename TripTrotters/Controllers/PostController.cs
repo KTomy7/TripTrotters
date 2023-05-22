@@ -151,6 +151,7 @@ namespace TripTrotters.Controllers
                 Title = post.Title,
                 Description = post.Description,
                 ApartmentId = post.ApartmentId,
+                Budget = post.Budget,
             };
             return View(postViewModel);
         }
@@ -171,6 +172,21 @@ namespace TripTrotters.Controllers
             }
             post.Title = editPostViewModel.Title;
             post.Description = editPostViewModel.Description;
+            post.Budget = editPostViewModel.Budget;
+            if(editPostViewModel.Images != null)
+            {
+                foreach (var item in editPostViewModel.Images)
+                {
+                    var result = await _cloudinaryImageService.AddPhotoAsync(item);
+                    Image image = new Image
+                    {
+                        ImageUrl = result.Url.ToString(),
+                        PostId = post.Id
+                    };
+                    _imageService.Add(image);
+                }
+            }
+            
 
             _postService.Update(post);
             return RedirectToAction("Index");

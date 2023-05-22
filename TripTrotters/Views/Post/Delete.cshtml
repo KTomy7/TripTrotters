@@ -4,8 +4,8 @@
 <form asp-controller="Post" method="post" asp-action="Delete" asp-route-Id="@Model.Id">
     <div>
         <input asp-for="Id" type="hidden" />
-        <button type="submit" class="btn btn-light">
-            <span class="fa-solid fa-trash" aria-hidden="true" style="color: #2ec42e"></s>
+        <button type="submit" class="btn btn-light" style="background-color: transparent; border: none">
+            <span class="fa-solid fa-trash" aria-hidden="true" style="color: #2ec42e"></span>
         </button>
     </div>
 </form>

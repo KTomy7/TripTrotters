@@ -3,13 +3,19 @@
 @model EditPostViewModel
 
 
-<form method="post" asp-action="Edit">
-   
-
+<form method="post" asp-action="Edit" asp-route-Id="@Model.Id">
+    <input type="hidden" id="UserId" name="UserId" asp-for="UserId"/>
+    <input asp-for="Id" type="hidden" />
     <div class=" form-group">
         <label asp-for="Title">Title</label>
         <input asp-for="Title" class="form-control" id=" placeholder="Enter apartment name">
         <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class=" form-group">
+        <label asp-for="Budget">Price/Night:</label>
+        <input asp-for="Budget" class="form-control" id=">
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <div class=" form-group">
@@ -18,11 +24,13 @@
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
- 
-    
+    <div class="form-group">
+        <label asp-for="Images">Images</label>
+        <input asp-for="Images" type="file" multiple class="form-control" placeholder="Image">
+        <span asp-validation-for="Images" class="text-danger"></span>
+    </div>
 
-    <button type="submit" class="btn btn-primary">Edit Apartment</button>
-
+    <button type="submit" class="btn btn-primary mt-1" style="background-color: #2ec42e; border:none">Edit Post</button>
 </form>
 
 
