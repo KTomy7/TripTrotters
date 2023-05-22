@@ -7,7 +7,7 @@
     <div class="form-group">
         <input type="hidden" asp-for="UserId" />
         <input type="hidden" asp-for="ApartmentId" />
-        <label asp-for="Description">Description</label>
+        <h3>Leave a review</h3>
         <textarea asp-for="Description" class="form-control" placeholder="Apartment review"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
@@ -19,7 +19,7 @@
         <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit Review</button>
+    <button type="submit" class="btn btn-primary" style="background-color: #2ec42e; border:none">Submit Review</button>
 
 
 

@@ -19,7 +19,7 @@
             <div class="form-group mb-3">
                 <label asp-for="Price">Price</label>
                 <div class="input-group">
-                    <span class="input-group-text">€</span>
+                    <span class="input-group-text">RON</span>
                     <input asp-for="Price" class="form-control">
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
@@ -74,7 +74,7 @@
                 }
             </div>
             <div class="mb-3">
-                <button type="submit" class="btn btn-lg btn-primary">Update changes</button>
+                <button type="submit" class="btn btn-lg btn-primary" style="background-color: #2ec42e; border:none">Update changes</button>
                 <a class="btn btn-lg btn-secondary" asp-controller="Apartment" asp-action="Index">Cancel</a>
             </div>
         </form>
