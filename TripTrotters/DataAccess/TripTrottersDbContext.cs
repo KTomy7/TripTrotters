@@ -9,12 +9,12 @@ namespace TripTrotters.DataAccess
     {
         public TripTrottersDbContext(DbContextOptions<TripTrottersDbContext> options) : base(options) { }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //
-        //    optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=TripTrotters;User ID=sa; Password = sA-12345; TrustServerCertificate=True");
-        //
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+
+            optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=TripTrotters;User ID=sa; Password = sA-12345; TrustServerCertificate=True");
+
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -27,7 +27,8 @@ namespace TripTrotters.DataAccess
             modelBuilder.Entity<Post>()
                 .HasOne(p => p.Apartment)
                 .WithMany(a => a.Posts)
-                .HasForeignKey(p => p.ApartmentId);
+                .HasForeignKey(p => p.ApartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.Comments)
@@ -74,7 +75,8 @@ namespace TripTrotters.DataAccess
             modelBuilder.Entity<Apartment>()
                 .HasMany(a => a.Images)
                 .WithOne(i => i.Apartment)
-                .HasForeignKey(i => i.ApartmentId);
+                .HasForeignKey(i => i.ApartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.Images)
@@ -110,7 +112,7 @@ namespace TripTrotters.DataAccess
                 .HasOne(ucl => ucl.Comment)
                 .WithMany(ucl => ucl.UsersLikes)
                 .HasForeignKey(ucl => ucl.CommentId)
-                .OnDelete (DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
 
@@ -123,5 +125,26 @@ namespace TripTrotters.DataAccess
         public DbSet<Image> Images { get; set; }
         public DbSet<UserPostLike> UserPostLikes { get; set; }
         public DbSet<UserCommentLike> UserCommentLikes { get; set; }
+
+
+        public override int SaveChanges()
+        {
+            DeleteImagesOfDeletedPosts();
+            return base.SaveChanges();
+        }
+
+        private void DeleteImagesOfDeletedPosts()
+        {
+            var deletedPosts = ChangeTracker.Entries<Post>()
+                .Where(e => e.State == EntityState.Deleted)
+                .Select(e => e.Entity);
+
+            foreach (var post in deletedPosts)
+            {
+                var imagesToDelete = Images.Where(i => i.PostId == post.Id);
+                Images.RemoveRange(imagesToDelete);
+            }
+        }
     }
 }
+

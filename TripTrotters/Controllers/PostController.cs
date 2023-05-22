@@ -265,6 +265,24 @@ namespace TripTrotters.Controllers
             {
                 return View("Error");
             }
+
+            var images = await _imageService.GetAllImagesByPostId(id);
+            if (images != null)
+            {
+                foreach (var image in images)
+                {
+                    try
+                    {
+                        await _cloudinaryImageService.DeletePhotoAsync(image.ImageUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "Couldn't delete photo!");
+                        return View("Delete", postDetails);
+                    }
+                    _imageService.Delete(image);
+                }
+            }
             _postService.Delete(postDetails);
             return RedirectToAction("Index");
         }
