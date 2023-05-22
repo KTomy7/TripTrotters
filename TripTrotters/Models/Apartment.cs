@@ -23,6 +23,6 @@ namespace TripTrotters.Models
         public List<Offer>? Offers { get; set; }
         
         public String Image { get; set; }
-        //public List<Image>? Images { get; set; }
+        
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
+using TripTrotters.Services;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
 
@@ -14,27 +16,38 @@ namespace TripTrotters.Controllers
         private readonly IAddressService _addressService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPhotoService _photoService;
+        private readonly IReviewService _reviewService;
 
 
 
-        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService )
+        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor, IPhotoService photoService, IReviewService reviewService)
         {
             _apartmentService = apService;
             _addressService = addressService;
             _httpContextAccessor = httpContextAccessor;
             _photoService = photoService;
+            _reviewService = reviewService;
+
         }
 
       
         public async Task<IActionResult> Index() 
 
         { IEnumerable<Apartment> apartments =  await _apartmentService.GetAll();
+            foreach (Apartment apartment in apartments)
+            {
+                var reviews = await _reviewService.GetAllByApartmentId(apartment.Id);
+                apartment.Reviews = reviews.ToList();
+            }
             return View(apartments);
         }
 
         public async Task<IActionResult> Detail(int id)
         {
             Apartment apartment  = await _apartmentService.GetByIdAsync(id);
+            var reviews = await _reviewService.GetAllByApartmentId(id);
+            apartment.Reviews = reviews.ToList();
+
             return View(apartment);
         }
 
