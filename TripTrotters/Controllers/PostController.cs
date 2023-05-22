@@ -41,6 +41,11 @@ namespace TripTrotters.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
             IEnumerable<Post> posts = await _postService.GetAll();
             foreach (Post post in posts)
             {
@@ -55,6 +60,12 @@ namespace TripTrotters.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string userName)
         {
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
+
             IEnumerable<Post> posts;
             
             posts = await _postService.GetAllbyUser(userName);

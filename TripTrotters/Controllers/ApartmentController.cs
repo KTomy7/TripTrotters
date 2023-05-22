@@ -28,7 +28,12 @@ namespace TripTrotters.Controllers
         [HttpGet]
         public async Task<IActionResult> Index() 
 
-        { 
+        {
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
             IEnumerable<Apartment> apartments = await _apartmentService.GetAll();
             return View(apartments);
         }
