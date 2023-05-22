@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TripTrotters.DataAccess;
 
@@ -11,9 +12,11 @@ using TripTrotters.DataAccess;
 namespace TripTrotters.Migrations
 {
     [DbContext(typeof(TripTrottersDbContext))]
-    partial class TripTrottersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230522125824_test2")]
+    partial class test2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -579,8 +582,7 @@ namespace TripTrotters.Migrations
                 {
                     b.HasOne("TripTrotters.Models.Apartment", "Apartment")
                         .WithMany("Images")
-                        .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ApartmentId");
 
                     b.HasOne("TripTrotters.Models.Post", "Post")
                         .WithMany("Images")
