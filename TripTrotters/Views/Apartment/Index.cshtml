@@ -56,8 +56,10 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
+
                                         <div style="display:flex; justify-content:center; align-items:center">
                                             <a type="button" class="btn btn-sm btn-outline-info m-2" asp-controller="Apartment" asp-action="Detail" asp-route-id="@item.Id">Details</a>
+
                                             @if (item.OwnerId == int.Parse(User.GetUserId()))
                                             {
                                                 <form  asp-controller="Apartment" asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">

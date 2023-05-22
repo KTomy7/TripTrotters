@@ -9,12 +9,14 @@ namespace TripTrotters.DataAccess
     {
         public TripTrottersDbContext(DbContextOptions<TripTrottersDbContext> options) : base(options) { }
 
+
 /*        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
             optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=TripTrotters;User ID=sa; Password = sA-12345; TrustServerCertificate=True");
 
         }*/
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,7 +46,8 @@ namespace TripTrotters.DataAccess
             modelBuilder.Entity<Apartment>()
                 .HasMany(a => a.Reviews)
                 .WithOne(r => r.Apartment)
-                .HasForeignKey(r => r.ApartmentId);
+                .HasForeignKey(r => r.ApartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Apartment>()
                 .HasOne(ow => ow.Owner)
@@ -60,7 +63,8 @@ namespace TripTrotters.DataAccess
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
-                .HasForeignKey(r => r.UserId);
+                .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.User)
@@ -120,7 +124,7 @@ namespace TripTrotters.DataAccess
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<Offer> Offers { get; set; }
-        public DbSet<Review> Rewies { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<UserPostLike> UserPostLikes { get; set; }

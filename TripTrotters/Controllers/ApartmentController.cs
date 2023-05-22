@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
+using TripTrotters.Services;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
 
@@ -15,19 +17,22 @@ namespace TripTrotters.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICloudinaryImageService _cloudinaryImageService;
         private readonly IImageService _imageService;
+        private readonly IReviewService _reviewService;
+        
 
-        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService)
+        public ApartmentController( IApartmentService apService, IAddressService addressService, IHttpContextAccessor httpContextAccessor, ICloudinaryImageService cloudinaryImageService, IImageService imageService, IReviewService reviewService )
         {
             _apartmentService = apService;
             _addressService = addressService;
             _httpContextAccessor = httpContextAccessor;
             _cloudinaryImageService = cloudinaryImageService;
             _imageService = imageService;
+            _reviewService = reviewService; 
+
         }
 
         [HttpGet]
         public async Task<IActionResult> Index() 
-
         {
             if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
             {
@@ -35,6 +40,11 @@ namespace TripTrotters.Controllers
                 return RedirectToAction("Login", "Account");
             }
             IEnumerable<Apartment> apartments = await _apartmentService.GetAll();
+            foreach (Apartment apartment in apartments)
+            {
+                var reviews = await _reviewService.GetAllByApartmentId(apartment.Id);
+                apartment.Reviews = reviews.ToList();
+            }
             return View(apartments);
         }
 
@@ -42,6 +52,9 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             Apartment apartment  = await _apartmentService.GetByIdAsync(id);
+            var reviews = await _reviewService.GetAllByApartmentId(id);
+            apartment.Reviews = reviews.ToList();
+
             return View(apartment);
         }
 

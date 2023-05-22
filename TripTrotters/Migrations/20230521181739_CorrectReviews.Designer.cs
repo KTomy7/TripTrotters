@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TripTrotters.DataAccess;
 
@@ -11,9 +12,11 @@ using TripTrotters.DataAccess;
 namespace TripTrotters.Migrations
 {
     [DbContext(typeof(TripTrottersDbContext))]
-    partial class TripTrottersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230521181739_CorrectReviews")]
+    partial class CorrectReviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,6 +201,10 @@ namespace TripTrotters.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
@@ -249,32 +256,6 @@ namespace TripTrotters.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("TripTrotters.Models.Image", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ApartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PostId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApartmentId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("TripTrotters.Models.Offer", b =>
@@ -332,6 +313,9 @@ namespace TripTrotters.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Likes")
@@ -456,36 +440,6 @@ namespace TripTrotters.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TripTrotters.Models.UserCommentLike", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "CommentId");
-
-                    b.HasIndex("CommentId");
-
-                    b.ToTable("UserCommentLikes");
-                });
-
-            modelBuilder.Entity("TripTrotters.Models.UserPostLike", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "PostId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("UserPostLikes");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -575,23 +529,6 @@ namespace TripTrotters.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TripTrotters.Models.Image", b =>
-                {
-                    b.HasOne("TripTrotters.Models.Apartment", "Apartment")
-                        .WithMany("Images")
-                        .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("TripTrotters.Models.Post", "Post")
-                        .WithMany("Images")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Apartment");
-
-                    b.Navigation("Post");
-                });
-
             modelBuilder.Entity("TripTrotters.Models.Offer", b =>
                 {
                     b.HasOne("TripTrotters.Models.User", "Agent")
@@ -649,44 +586,6 @@ namespace TripTrotters.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TripTrotters.Models.UserCommentLike", b =>
-                {
-                    b.HasOne("TripTrotters.Models.Comment", "Comment")
-                        .WithMany("UsersLikes")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TripTrotters.Models.User", "User")
-                        .WithMany("LikedComments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TripTrotters.Models.UserPostLike", b =>
-                {
-                    b.HasOne("TripTrotters.Models.Post", "Post")
-                        .WithMany("UsersLikes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TripTrotters.Models.User", "User")
-                        .WithMany("LikedPosts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TripTrotters.Models.Address", b =>
                 {
                     b.Navigation("Apartment")
@@ -695,8 +594,6 @@ namespace TripTrotters.Migrations
 
             modelBuilder.Entity("TripTrotters.Models.Apartment", b =>
                 {
-                    b.Navigation("Images");
-
                     b.Navigation("Offers");
 
                     b.Navigation("Posts");
@@ -704,18 +601,9 @@ namespace TripTrotters.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("TripTrotters.Models.Comment", b =>
-                {
-                    b.Navigation("UsersLikes");
-                });
-
             modelBuilder.Entity("TripTrotters.Models.Post", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Images");
-
-                    b.Navigation("UsersLikes");
                 });
 
             modelBuilder.Entity("TripTrotters.Models.User", b =>
@@ -723,10 +611,6 @@ namespace TripTrotters.Migrations
                     b.Navigation("Apartments");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("LikedComments");
-
-                    b.Navigation("LikedPosts");
 
                     b.Navigation("Offers");
 
