@@ -13,5 +13,8 @@ namespace TripTrotters.ViewModels
         public string City { get; set; }
         public string Street { get; set; }
         public int StreetNumber { get; set; }
+        public IEnumerable<IFormFile>? NewImages { get; set; }
+        public List<string>? ImageUrls { get; set; }
+        public List<string>? ImagesToDelete { get; set; }
     }
 }

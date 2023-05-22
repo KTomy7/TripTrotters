@@ -4,45 +4,54 @@
 
 @inject IApartmentService _apartmentService;
 
-<form method="post" asp-action="Create" enctype="multipart/form-data">
-    <input type="hidden" id="UserId" name="UserId" asp-for="UserId" />
-    <div class="form-group">
-        <label asp-for="Title">Title</label>
-        <input asp-for="Title" class="form-control" id=" placeholder="Enter the title of the post">
-        <span asp-validation-for="Title" class="text-danger"></span>
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <h1 class="text-center mt-3">Create a new Post</h1>
+        <form method="post" asp-action="Create" enctype="multipart/form-data">
+            <input type="hidden" id="UserId" name="UserId" asp-for="UserId" />
+            <div class="form-group mb-3">
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" class="form-control">
+                <span asp-validation-for="Title" class="text-danger"></span>
 
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Description">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="ApartmentId" class="control-label">Select an Apartment</label>
+                <select asp-for="ApartmentId" class="form-select">
+                    @foreach (var item in await _apartmentService.GetAll())
+                    {
+                        <option value="@item.Id">@item.Title</option>
+                    }
+                </select>
+                <span asp-validation-for="ApartmentId" class="text-danger"></span>
+
+
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Budget">Budget</label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input asp-for="Budget" class="form-control">
+                    <span asp-validation-for="Budget" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Images">Upload Images</label>
+                <input asp-for="Images" type="file" multiple class="form-control">
+                <span asp-validation-for="Images" class="text-danger"></span>
+
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-lg btn-primary">Add Post</button>
+                <a class="btn btn-lg btn-secondary" asp-controller="Post" asp-action="Index">Cancel</a>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <input asp-for="Description" class="form-control" id=" placeholder="Enter the description">
-        <span asp-validation-for="Description" class="text-danger"></span>
-
-    </div>
-    <div class="form-group">
-        <label asp-for="ApartmentId" class="control-label"></label>
-        <select asp-for="ApartmentId" class="form-control">
-            @foreach (var item in await _apartmentService.GetAll())
-            {
-                <option value="@item.Id">@item.Title</option>
-            }
-        </select>
-        <span asp-validation-for="ApartmentId" class="text-danger"></span>
-
-
-    </div>
-    <div class="form-group">
-        <label asp-for="Budget">Budget</label>
-        <input asp-for="Budget" class="form-control" id=" placeholder="Enter the Budget">
-        <span asp-validation-for="Budget" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Images">Image</label>
-        <input asp-for="Images" type="file" multiple class="form-control" placeholder="Image">
-        <span asp-validation-for="Images" class="text-danger"></span>
-
-    </div>
-
-
-    <button type="submit" class="btn btn-primary">Add Post</button>
-</form>
+</div>

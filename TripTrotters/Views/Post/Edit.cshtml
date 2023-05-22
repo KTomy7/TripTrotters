@@ -2,28 +2,60 @@
 @using TripTrotters.Services.Abstractions;
 @model EditPostViewModel
 
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <h1 class="text-center mt-3">Edit the Post</h1>
+        <form method="post" asp-action="Edit" enctype="multipart/form-data">
+            <div class=" form-group mb-3">
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" class="form-control">
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
 
-<form method="post" asp-action="Edit">
-   
+            <div class=" form-group mb-3">
+                <label asp-for="Description">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Budget">Budget</label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input asp-for="Budget" class="form-control">
+                    <span asp-validation-for="Budget" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="NewImages">Upload more Images</label>
+                <input asp-for="NewImages" type="file" multiple class="form-control">
+                <span asp-validation-for="NewImages" class="text-danger"></span>
 
-    <div class=" form-group">
-        <label asp-for="Title">Title</label>
-        <input asp-for="Title" class="form-control" id=" placeholder="Enter apartment name">
-        <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label>Or delete existing Images</label>
+                @{
+                    int n = 1;
+                }
+                @if (Model.ImageUrls.Count != 0)
+                {
+                    @foreach (var url in Model.ImageUrls)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="image-@n" value="@url" name="ImagesToDelete">
+                            <label class="form-check-label" for="image-@n">@n. Delete</label>
+                        </div>
+                        n++;
+                        <img src="@url" class="img-thumbnail" style="width:200px" />
+                    }
+                }
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-lg btn-primary">Edit Post</button>
+                <a class="btn btn-lg btn-secondary" asp-controller="Post" asp-action="Index">Cancel</a>
+            </div>
+        </form>
     </div>
-
-    <div class=" form-group">
-        <label asp-for="Description">Description</label>
-        <input asp-for="Description" class="form-control" id=" placeholder="Enter apartment description">
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
- 
-    
-
-    <button type="submit" class="btn btn-primary">Edit Apartment</button>
-
-</form>
+</div>
 
 
 
