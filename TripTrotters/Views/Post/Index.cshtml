@@ -15,11 +15,15 @@
 
         @for(int i = 1; i <= Model.Count(); i++)
         {
+            string postEditBtnId = $"#postEditBtn{i}";
+            string postEditInfoId = $"#postEditInfo{i}";
+            string postinfoId = $"#postInfo{i}";
             string commentBtnId = $"#commentBtn{i}";
             string commentAddId = $"#commentAdd{i}";
             string commentsListId = $"#commentsList{i}";
             string noOfCommentsBtnId = $"#noOfCommentsBtn{i}";
-    
+            string carouselId = $"#Carousel{i}";
+
             <text>
                     $(document).on('click', '@commentBtnId', function () {
                         $('@commentAddId').toggle();
@@ -27,6 +31,17 @@
 
                     $(document).on('click', '@noOfCommentsBtnId', function () {
                         $('@commentsListId').toggle();
+                    });
+
+                    $(document).on('click', '@postEditBtnId', function () {
+                        $('@postinfoId').toggle();
+                    });
+
+                    $(document).on('click', '@postEditBtnId', function () {
+                        $('@postEditInfoId').toggle();
+                    });
+                    $(document).on('click', '@postEditBtnId', function () {
+                        $('@carouselId').toggle();
                     });
             </text>
         }
@@ -61,7 +76,8 @@
 
 
 <div class="container">
-    <div class="d-flex align-items-center justify-content-center flex-column">
+    <div class="d-flex align-items-center justify-content-center flex-row">
+        <a type="button" class="btn btn-success p-2 me-1" style="background-color: #2ec42e; border: none" asp-controller="Post" asp-action="Create">New Post</a>
         <form method="post" asp-action="Index" class="d-flex">
             <input type="hidden" name="searchString" value="userNames" />
             <input class="form-control me-1 p-2" type="search" name="userName" placeholder="Search user" aria-label="Search" style="width: 300px">
@@ -73,6 +89,7 @@
     <div class="feed">
     @foreach(var item in Model)
     {
+
             <div class="post-body">
                 <div class="user-info">
                     <div class="user">
@@ -81,26 +98,46 @@
                     </div>
                     @if (item.UserId == int.Parse(User.GetUserId()))
                     {
-                        {ViewData["Id"] = item.Id;} 
-                        @Html.Partial("Delete.cshtml", new Post{Id = (int)ViewData["Id"]})
+                        <div class="d-flex">
+                            <button id="@string.Format("postEditBtn{0}",postNo)" class="btn btn-light p-2 me-1" style="background-color: transparent; border: none; position: relative; top:-8px">
+                                    <span class="fa-solid fa-edit" aria-hidden="true" style="color: #2ec42e"></span>
+                             </button>
+
+                            @{ViewData["Id"] = item.Id;} 
+                            @Html.Partial("Delete.cshtml", new Post{Id = (int)ViewData["Id"]})
+                        </div>
                     }
 
                 </div>
                 <div class="date-time">
                     @item.Date
                 </div>
-                <div class="postTitle">
-                    @item.Title - @item.Budget RON/night
+                <div id="@string.Format("postInfo{0}", postNo)">
+                    <div class="postTitle">
+                        @item.Title - @item.Budget RON/night
+                    </div>
+
+                    <div class="description">
+                        @item.Description
+                    </div>
                 </div>
-                <div class="description">
-                    @item.Description
+                <div id="@string.Format("postEditInfo{0}", postNo)" style="display:none; margin-bottom:10px">
+                    @{
+                        var Images = await _imageService.GetAllImagesByPostId(item.Id);
+                        List<string> ImageURLS = new List<string>();
+                        foreach(var postImage in Images)
+                        {
+                            ImageURLS.Add(postImage.ImageUrl);
+                        }
+                    }
+                    @Html.Partial("Edit.cshtml", new EditPostViewModel{ Id = item.Id, Budget = item.Budget, Title = item.Title, Description = item.Description, Likes = item.Likes, Date = item.Date, Comments = item.Comments, ApartmentId = item.ApartmentId, UserId = item.UserId, ImageUrls = ImageURLS})
                 </div>
                 <div class="post-detail">
                     <div id="@string.Format("Carousel{0}",postNo)" class="carousel slide" data-bs-ride="carousel">
-                        @{
+                    @{
                             var postImages = await _imageService.GetAllImagesByPostId(item.Id);
                             int imgNo = 1;
-                        }
+                     }
 
                         <div class="carousel-inner">
                             @foreach (var image in postImages)
