@@ -29,9 +29,20 @@ namespace TripTrotters.Services
             return await _context.Images.Where(i => i.PostId == id).ToListAsync();
         }
 
+        public async Task<Image> GetImageByUrl(string url)
+        {
+            return await _context.Images.FirstOrDefaultAsync(i => i.ImageUrl == url);
+        }
+
         public bool Add(Image i)
         {
             _context.Images.Add(i);
+            return Save();
+        }
+
+        public bool Delete(Image i)
+        {
+            _context.Images.Remove(i);
             return Save();
         }
 
