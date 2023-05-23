@@ -87,13 +87,14 @@ namespace TripTrotters.Controllers
             }
             Review review = await _reviewService.GetByIdAsync(reviewViewModel.Id);
             if (review == null)
+            {
                 return View("Error");
+            }
 
             review.Description = reviewViewModel.Description;
             review.Rating = reviewViewModel.Rating;
-           
-
             _reviewService.Update(review);
+
             return RedirectToAction("Detail", "Apartment", new { id = reviewViewModel.ApartmentId });
         }
 

@@ -27,127 +27,122 @@
         });
 </script>
 <div style="margin-left: 100px">
-    <h1>@Model.Title</h1>
+    <div class="row">
+        <div class="col-6 mb-5">
+            <h1>@Model.Title</h1>
+            <div>
+                <h4>Price: @Model.Price RON/Night</h4>
+                <h4>Address: Strada @Model.Address.Street nr. @Model.Address.StreetNumber, @Model.Address.City, @Model.Address.Country </h4>
+                <h4>Description:</h4>
+                <p>@Model.Description</p>
+            </div>
+            <div id="@string.Format("Carousel{0}", @Model.Id)" class="carousel slide" data-bs-ride="carousel" style="width: 500px">
+                @{
+                    var postImages = await _imageService.GetAllImagesByApartmentId(@Model.Id);
+                    int imgNo = 1;
+                }
+                <div class="carousel-inner">
+                    @foreach (var image in postImages)
+                    {
+                        @if (imgNo == 1)
+                        {
+                            <div class="carousel-item active">
+                                <img src="@image.ImageUrl" class="d-block w-100" alt="...">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="carousel-item">
+                                <img src="@image.ImageUrl" class="d-block w-100" alt="...">
+                            </div>
+                        }
+                        imgNo++;
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="@string.Format("#Carousel{0}",@Model.Id)" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="@string.Format("#Carousel{0}", @Model.Id)" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
 
-    <div>
-        <h4>Price: @Model.Price RON/Night</h4>
-        <h4>Address: Strada @Model.Address.Street nr. @Model.Address.StreetNumber, @Model.Address.City, @Model.Address.Country </h4>
-        <h4>Description:</h4>
-        <p>@Model.Description</p>
-    </div>
-
-    @if (Model.Reviews != null && Model.Reviews.Count > 0)
-    {
-        <h2>Reviews:</h2>
-        <div class="row">
-            <div class="col-md-10">
-            @foreach (var review in reviews)
+        </div>
+        <div class="col-6">
+            <div class="comment-form">
+                @{
+                    ViewData["ApartmentId"] = @Model.Id;
+                }
+                @Html.Partial("~/Views/Review/Create.cshtml", new ReviewViewModel{ ApartmentId = (int)ViewData["ApartmentId"]})
+            </div>
+            @if (Model.Reviews != null && Model.Reviews.Count > 0)
             {
+                <h2>Reviews:</h2>
+                @foreach (var review in reviews)
+                {
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
-                            <h4 class="card-text">Author: @review.User.UserName</h4>
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <h4 class="card-text">Author: @review.User.UserName</h4>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <p class="card-text">Date: @review.Date.ToString("dd.MM.yyyy")</p>
+                                </div>
+                            </div>
                             <h6 class="card-text ">@review.Description</h6>
                             <p class="card-text">Rating: @review.Rating</p>
-                            <p class="card-text">Date: @review.Date</p>
 
                             @if (review.UserId == int.Parse(User.GetUserId()))
                             {
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="comment-button">
+                                    @*<div class="comment-button">
                                         <button id="@string.Format("reviewEditBtn{0}", reviewNo)" type="button" class="btn btn-light">
                                             <span class="far fa-comment"></span>
                                             <i>Edit your review</i>
                                         </button>
-                                    </div>
+                                    </div>*@
                                     <div>
-                                        <a type="button" class="btn btn-sm btn-outline-info" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id">Delete</a>
+                                        <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id">Delete</a>
                                     </div>
                                 </div>
                             }
 
-
                             <div id="@string.Format("reviewEdit{0}", reviewNo)" style="display:none">
                                 <div class="comment-form">
-                                
-                                    @Html.Partial("~/Views/Review/Edit.cshtml", new  ReviewViewModel{ Id = review.Id, ApartmentId = review.ApartmentId,   UserId = review.UserId})
+                                    @Html.Partial("~/Views/Review/Edit.cshtml", new  ReviewViewModel{ Id = review.Id, Description = review.Description, Rating = review.Rating, ApartmentId = review.ApartmentId,  UserId = review.UserId})
                                 </div>
                             </div>
                         </div>
                     </div>
-           
-                reviewNo++;
-            }
-            </div>
-        </div>
-    }
 
-    @if (Model.Posts != null && Model.Posts.Count > 0)
-    {
-        <h2>Posts:</h2>
-        <ul>
-            @foreach (var post in Model.Posts)
-            {
-                <li>@post.Title: </li>
-            }
-        </ul>
-    }
-
-    @if (Model.Offers != null && Model.Offers.Count > 0)
-    {
-        <h2>Offers:</h2>
-        <ul>
-            @foreach (var offer in Model.Offers)
-            {
-                <li>@offer.Title: </li>
-            }
-        </ul>
-    }
-
-
-    <div id="@string.Format("Carousel{0}", @Model.Id)" class="carousel slide" data-bs-ride="carousel" style="width: 500px">
-        @{
-            var postImages = await _imageService.GetAllImagesByApartmentId(@Model.Id);
-            int imgNo = 1;
-        }
-
-        <div class="carousel-inner">
-            @foreach (var image in postImages)
-            {
-                @if (imgNo == 1)
-                {
-                    <div class="carousel-item active">
-                        <img src="@image.ImageUrl" class="d-block w-100" alt="..." >
-                    </div>
+                    reviewNo++;
                 }
-                else
-                {
-                    <div class="carousel-item">
-                        <img src="@image.ImageUrl" class="d-block w-100" alt="...">
-                    </div>
-                }
-                imgNo++;
             }
-        </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="@string.Format("#Carousel{0}",@Model.Id)" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="@string.Format("#Carousel{0}", @Model.Id)" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-
-    <div>
-        <div class="comment-form">
-            @{
-                ViewData["ApartmentId"] = @Model.Id;
+            @if (Model.Posts != null && Model.Posts.Count > 0)
+            {
+                <h2>Posts:</h2>
+                <ul>
+                    @foreach (var post in Model.Posts)
+                    {
+                        <li>@post.Title: </li>
+                    }
+                </ul>
             }
-            @Html.Partial("~/Views/Review/Create.cshtml", new ReviewViewModel{ ApartmentId = (int)ViewData["ApartmentId"]})
 
+            @if (Model.Offers != null && Model.Offers.Count > 0)
+            {
+                <h2>Offers:</h2>
+                <ul>
+                    @foreach (var offer in Model.Offers)
+                    {
+                        <li>@offer.Title: </li>
+                    }
+                </ul>
+            }
         </div>
     </div>
-
-
 </div>
