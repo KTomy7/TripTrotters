@@ -49,6 +49,25 @@ namespace TripTrotters.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> MyApartments()
+        {
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
+            var userId = int.Parse(_httpContextAccessor.HttpContext.User.GetUserId());
+            IEnumerable<Apartment> apartments = await _apartmentService.GetByUserIdAsync(userId);
+            foreach (Apartment apartment in apartments)
+            {
+                var reviews = await _reviewService.GetAllByApartmentId(apartment.Id);
+                apartment.Reviews = reviews.ToList();
+            }
+            return View(apartments);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
             Apartment apartment  = await _apartmentService.GetByIdAsync(id);
