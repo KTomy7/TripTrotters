@@ -26,8 +26,14 @@ namespace TripTrotters.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            if (!_httpContextAccessor.HttpContext.User.IsLoggedIn())
+            {
+                TempData["Error"] = "You must be logged in first!";
+                return RedirectToAction("Login", "Account");
+            }
             IEnumerable<Offer> offers = await _offerService.GetAll();
             return View(offers);
+
         }
 
         [HttpGet]
@@ -87,6 +93,8 @@ namespace TripTrotters.Controllers
             {
                 return View("Error");
             }
+
+            Apartment apartment = await _apartmentService.GetByIdAsync(offer.ApartmentId);
             var offerViewModel = new OfferViewModel
             {
                 Title = offer.Title,
@@ -94,6 +102,8 @@ namespace TripTrotters.Controllers
                 StartDate = offer.StartDate,
                 EndDate = offer.EndDate,
                 ApartmentId = offer.ApartmentId,
+                Price = apartment.Price * (offer.EndDate - offer.StartDate).TotalDays,
+
 
             };
 
@@ -109,7 +119,7 @@ namespace TripTrotters.Controllers
                 ModelState.AddModelError("", "Failed to edit offer");
                 return View("Edit", offerViewModel);
             }
-
+            Apartment apartment = await _apartmentService.GetByIdAsync(offerViewModel.ApartmentId);
             Offer offer = await _offerService.GetByIdAsync(id);
             if (offer == null)
             {
@@ -121,6 +131,7 @@ namespace TripTrotters.Controllers
             offer.StartDate = offerViewModel.StartDate;
             offer.EndDate = offerViewModel.EndDate;
             offer.ApartmentId = offerViewModel.ApartmentId;
+            offer.Price = apartment.Price * (offer.EndDate - offer.StartDate).TotalDays;
 
             _offerService.Update(offer);
             return RedirectToAction("Index");
