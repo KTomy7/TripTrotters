@@ -84,11 +84,11 @@
                 {
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
-                            <div class="row justify-content-between mb-2">
-                                <div class="col-4">
+                            <div class="row mb-2">
+                                <div class="col-6">
                                     <h4 class="card-text">Author: @review.User.UserName</h4>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-6 text-end">
                                     <p class="card-text">Date: @review.Date.ToString("dd.MM.yyyy")</p>
                                 </div>
                             </div>
@@ -98,23 +98,21 @@
                             @if (review.UserId == int.Parse(User.GetUserId()))
                             {
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="comment-button">
+                                    @*<div class="comment-button">
                                         <button id="@string.Format("reviewEditBtn{0}", reviewNo)" type="button" class="btn btn-light">
                                             <span class="far fa-comment"></span>
                                             <i>Edit your review</i>
                                         </button>
-                                    </div>
+                                    </div>*@
                                     <div>
                                         <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id">Delete</a>
                                     </div>
                                 </div>
                             }
 
-
                             <div id="@string.Format("reviewEdit{0}", reviewNo)" style="display:none">
                                 <div class="comment-form">
-
-                                    @Html.Partial("~/Views/Review/Edit.cshtml", new  ReviewViewModel{ Id = review.Id, ApartmentId = review.ApartmentId,   UserId = review.UserId})
+                                    @Html.Partial("~/Views/Review/Edit.cshtml", new  ReviewViewModel{ Id = review.Id, Description = review.Description, Rating = review.Rating, ApartmentId = review.ApartmentId,  UserId = review.UserId})
                                 </div>
                             </div>
                         </div>

@@ -1,12 +1,10 @@
 ﻿@using TripTrotters.ViewModels;
 @model ReviewViewModel;
 
-@{
-}
-<form method="post" asp-controller="Review" asp-action="Edit"  >
-    <input type="hidden" id="Id" name="Id"  asp-for="Id"/>
-    <input type="hidden" id="UserId" name="UserId"  />
-    <input type="hidden" id="ApartmentId" name="ApartmentId"  />
+<form method="post" asp-controller="Review" asp-action="Edit" >
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="ApartmentId" />
     <div class="form-group mb-2 mt-2">
         <textarea asp-for="Description" class="form-control" rows="2" value="@Model.Description"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
@@ -20,5 +18,3 @@
         <button type="submit" class="btn btn-primary" style="background-color: #2ec42e; border:none">Edit your review</button>
     </div>
 </form>
-
-
