@@ -37,7 +37,10 @@
                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Owner"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Apartment" asp-action="Create">Create Apartment</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Apartment" asp-action="MyApartments">My-Apartments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Apartment" asp-action="Create">Create-Apartment</a>
                             </li>
                         }
                         <li class="nav-item">

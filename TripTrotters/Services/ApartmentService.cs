@@ -46,6 +46,11 @@ namespace TripTrotters.Services
             return await _context.Apartments.Include(a => a.Address).FirstOrDefaultAsync(a => a.Id == id);
         }
 
+        public async Task<IEnumerable<Apartment>> GetByUserIdAsync(int userId)
+        {
+            return await _context.Apartments.Include(a => a.Address).Where(a => a.OwnerId == userId).ToListAsync();
+        }
+
         public bool Save()
         {
             var saved = _context.SaveChanges();
