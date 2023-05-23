@@ -9,35 +9,39 @@
     <div class="container">
 
         <div class="row">
-            @foreach(var item in Model)
+            @foreach (var item in Model)
             {
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                       
-                                </div>
-                                <p class="card-text">@item.Title</p>
-                                <p class="card-text">@item.Description</p>
-                                <p class="card-text">@item.Apartment.Address.City</p>
-                                <p class="card-text">Start date: @item.StartDate</p>
-                                <p class="card-text">End date: @item.EndDate</p>
-                           
-                            
-                            
+            <div class="container">
+                <div class="card-deck mb-3 text-center">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">@item.Title</h4>
                         </div>
+                        <div class="card-body">
+                            <h1 class="card-title pricing-card-title"> @item.Price RON <small class="text-muted"></small></h1>
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li>@item.Description</li>
+                                <li>@item.Apartment.Title</li>
+                                <li>@item.Apartment.Address.City</li>
+                                <li>Start date: @item.StartDate</li>
+                                <li>End date: @item.EndDate</li>
+                            </ul>
+                           
+                        </div>
+                    </div>
+                </div>
 
-              
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                         <a asp-controller="offer" asp-action="Detail" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">View</a>
                         <a asp-controller="offer" asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
                         <a asp-controller="offer" asp-action="Delete" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
-
                     </div>
-                   
                 </div>
-                
-
+            </div>
             }
+
+            <div>
             
        
     </div>

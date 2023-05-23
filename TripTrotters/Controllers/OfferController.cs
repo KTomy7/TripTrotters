@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripTrotters.DataAccess;
 using TripTrotters.Models;
+using TripTrotters.Services;
 using TripTrotters.Services.Abstractions;
 using TripTrotters.ViewModels;
+
 
 namespace TripTrotters.Controllers
 {
@@ -12,11 +14,13 @@ namespace TripTrotters.Controllers
     {
         private readonly IOfferService _offerService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IApartmentService _apartmentService;
 
-        public OfferController(IOfferService offerService, IHttpContextAccessor httpContextAccessor)
+        public OfferController(IOfferService offerService, IHttpContextAccessor httpContextAccessor, IApartmentService apartmentService)
         {
             _offerService = offerService;
             _httpContextAccessor = httpContextAccessor;
+            _apartmentService = apartmentService;
         }
 
         [HttpGet]
@@ -58,12 +62,14 @@ namespace TripTrotters.Controllers
             {
                 return View(offerViewModel);
             }
+            Apartment apartment = await _apartmentService.GetByIdAsync(offerViewModel.ApartmentId);
             Offer offer = new Offer
             {
                 Title = offerViewModel.Title,
                 Description = offerViewModel.Description,
                 StartDate = offerViewModel.StartDate,
                 EndDate = offerViewModel.EndDate,
+                Price = apartment.Price * (offerViewModel.EndDate - offerViewModel.StartDate).TotalDays,
                 AgentId = offerViewModel.AgentId,
                 ApartmentId = offerViewModel.ApartmentId,
             };
@@ -77,7 +83,7 @@ namespace TripTrotters.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             Offer offer = await _offerService.GetByIdAsync(id);
-            if(offer == null)
+            if (offer == null)
             {
                 return View("Error");
             }
@@ -109,10 +115,10 @@ namespace TripTrotters.Controllers
             {
                 return View("Error");
             }
-               
+
             offer.Title = offerViewModel.Title;
             offer.Description = offerViewModel.Description;
-            offer.StartDate = offerViewModel.StartDate; 
+            offer.StartDate = offerViewModel.StartDate;
             offer.EndDate = offerViewModel.EndDate;
             offer.ApartmentId = offerViewModel.ApartmentId;
 
