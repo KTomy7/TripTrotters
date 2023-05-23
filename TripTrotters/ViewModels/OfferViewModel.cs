@@ -12,5 +12,7 @@ namespace TripTrotters.ViewModels
         public DateTime EndDate { get; set; } 
         public int AgentId { get; set; }
         public int ApartmentId { get; set; }
+
+        public double Price { get; set; }
      }
 }

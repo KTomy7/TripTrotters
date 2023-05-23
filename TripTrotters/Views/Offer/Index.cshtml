@@ -34,8 +34,12 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                         <a asp-controller="offer" asp-action="Detail" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">View</a>
-                        <a asp-controller="offer" asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <a asp-controller="offer" asp-action="Delete" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
+
+                    @if (item.AgentId == int.Parse(User.GetUserId()))
+                        {
+                         <a asp-controller="offer" asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Edit</a>
+                         <a asp-controller="offer" asp-action="Delete" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Delete</a>
+                        }
                     </div>
                 </div>
             </div>
